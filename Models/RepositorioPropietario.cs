@@ -3,19 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace InmobiliariaSpartano.Models
 {
     public class RepositorioPropietario : RepositorioBase
     {
-        protected readonly string tabla;
         public RepositorioPropietario (IConfiguration config) : base (config)
         {
             this.tabla = "Propietarios";
+            this.columnas = new string[5] { "Nombre", "Apellido", "Dni", "Telefono", "Email"}; // clave??
         }
 
-        public int Eliminar(int id)
+        /*public int Eliminar(int id)
         {
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -30,9 +31,9 @@ namespace InmobiliariaSpartano.Models
                 }
             }
             return res;
-        }
+        }*/
 
-        public int Editar(Propietario p)
+        /*public int Editar(Propietario p)
         {
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -43,6 +44,7 @@ namespace InmobiliariaSpartano.Models
                     $"{nameof(Propietario.Dni)} = @Dni, " +
                     $"{nameof(Propietario.Telefono)} = @Telefono, " +
                     $"{nameof(Propietario.Email)} = @Email WHERE Id = {p.Id};";
+
                 using (var command = new SqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Nombre", p.Nombre);
@@ -57,9 +59,9 @@ namespace InmobiliariaSpartano.Models
                 }
             }
             return res;
-        }
+        }*/
 
-        public int Alta(Propietario p)
+        public int Alta(Propietario p) // pensar como hacer con la clave (puede pasar lo mismo con otras columnas mas adelante)
         {
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
