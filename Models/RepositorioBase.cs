@@ -14,7 +14,7 @@ namespace InmobiliariaSpartano.Models
         protected string tabla;
         protected string[] columnas;
 
-        public RepositorioBase (IConfiguration configuration)
+        public RepositorioBase(IConfiguration configuration)
         {
             this.configuration = configuration;
             connectionString = configuration["ConnectionStrings:DefaultConnection"];
@@ -57,6 +57,7 @@ namespace InmobiliariaSpartano.Models
                     for (int i = 0; i < columnas.Length; i++)
                         command.Parameters.AddWithValue($"@{columnas[i]}", e.GetType().GetProperty(columnas[i]).GetValue(e, null));
 
+                    string s = ((Propietario)e).GetType().GetProperty("Apellido").GetValue(e, null).ToString();
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -122,7 +123,6 @@ namespace InmobiliariaSpartano.Models
                     reader.Read();
                     
                     // constructor
-                    // ¿¿como hago para saber la subclase mas baja de la entidad?? 
 
                     res = new ???
                     {

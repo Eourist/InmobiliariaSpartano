@@ -10,10 +10,10 @@ namespace InmobiliariaSpartano.Models
 {
     public class RepositorioPropietario : RepositorioBase
     {
-        public RepositorioPropietario (IConfiguration config) : base (config)
+        public RepositorioPropietario(IConfiguration config) : base(config)
         {
             this.tabla = "Propietarios";
-            this.columnas = new string[5] { "Nombre", "Apellido", "Dni", "Telefono", "Email"}; // clave??
+            this.columnas = new string[6] { "Nombre", "Apellido", "Dni", "Telefono", "Email", "Clave" };
         }
 
         /*public int Eliminar(int id)
@@ -61,14 +61,14 @@ namespace InmobiliariaSpartano.Models
             return res;
         }*/
 
-        public int Alta(Propietario p) // pensar como hacer con la clave (puede pasar lo mismo con otras columnas mas adelante)
+        public int Altaa(Propietario p)
         {
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"INSERT INTO {tabla} " +
-                    $"({nameof(Propietario.Nombre)}, {nameof(Propietario.Apellido)}, {nameof(Propietario.Dni)}, {nameof(Propietario.Telefono)}, {nameof(Propietario.Email)}, {nameof(Propietario.Clave)}) " +
-                    $"VALUES (@Nombre, @Apellido, @Dni, @Telefono, @Email, @Clave); SELECT SCOPE_IDENTITY();";
+                $"({nameof(Propietario.Nombre)}, {nameof(Propietario.Apellido)}, {nameof(Propietario.Dni)}, {nameof(Propietario.Telefono)}, {nameof(Propietario.Email)}, {nameof(Propietario.Clave)}) " +
+                $"VALUES (@Nombre, @Apellido, @Dni, @Telefono, @Email, @Clave); SELECT SCOPE_IDENTITY();";
                 using (var command = new SqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Nombre", p.Nombre);

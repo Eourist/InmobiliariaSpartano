@@ -23,10 +23,10 @@ namespace InmobiliariaSpartano.Controllers
         // GET: TestController
         public ActionResult Index()
         {
-            List<Propietario> propietarios = repositorioPropietario.ObtenerTodos();
+            /*List<Propietario> propietarios = repositorioPropietario.ObtenerTodos();
             ViewData["Propietarios"] = propietarios;
-            //ViewBag.Personas = personas;
-            return View();
+            ViewBag.Propietarios = propietarios;*/
+            return View(repositorioPropietario.ObtenerTodos());
         }
 
         // GET: TestController/Details/5
@@ -71,15 +71,13 @@ namespace InmobiliariaSpartano.Controllers
         {
             try
             {
-                Propietario p = new Propietario
-                {
-                    Id = Convert.ToInt32(collection["Id"]),
-                    Nombre = collection["Nombre"],
-                    Apellido = collection["Apellido"],
-                    Dni = collection["Dni"],
-                    Telefono = collection["Telefono"],
-                    Email = collection["Email"]
-                };
+                Propietario p = repositorioPropietario.ObtenerPorId(id);
+                p.Nombre = collection["Nombre"];
+                p.Apellido = collection["Apellido"];
+                p.Dni = collection["Dni"];
+                p.Telefono = collection["Telefono"];
+                p.Email = collection["Email"];
+
                 repositorioPropietario.Editar(p);
                 return RedirectToAction(nameof(Index));
             }
