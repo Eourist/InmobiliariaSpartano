@@ -57,7 +57,6 @@ namespace InmobiliariaSpartano.Models
                     for (int i = 0; i < columnas.Length; i++)
                         command.Parameters.AddWithValue($"@{columnas[i]}", e.GetType().GetProperty(columnas[i]).GetValue(e, null));
 
-                    string s = ((Propietario)e).GetType().GetProperty("Apellido").GetValue(e, null).ToString();
                     connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
@@ -116,19 +115,16 @@ namespace InmobiliariaSpartano.Models
                         sql += $"{columnas[i]}, ";
                 }
                 sql += $" FROM {tabla} WHERE Id = {id};";
+
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
                     SqlDataReader reader = command.ExecuteReader();
                     reader.Read();
                     
-                    // constructor
+                    // constructor de que??
+                    //res = new Entidad()
 
-                    res = new ???
-                    {
-                        Id = reader.GetInt32(0),
-                           ???
-                    };
                     connection.Close();
                 }
             }

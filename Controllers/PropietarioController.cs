@@ -24,9 +24,10 @@ namespace InmobiliariaSpartano.Controllers
         public ActionResult Index()
         {
             /*List<Propietario> propietarios = repositorioPropietario.ObtenerTodos();
-            ViewData["Propietarios"] = propietarios;
+            
             ViewBag.Propietarios = propietarios;*/
-            return View(repositorioPropietario.ObtenerTodos());
+            ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos();
+            return View();
         }
 
         // GET: TestController/Details/5

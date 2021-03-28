@@ -23,7 +23,8 @@ namespace InmobiliariaSpartano.Controllers
         // GET: TestController
         public ActionResult Index()
         {
-            return View(repositorioInquilino.ObtenerTodos());
+            ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos();
+            return View();
         }
 
         // GET: TestController/Details/5

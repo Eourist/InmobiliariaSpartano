@@ -61,7 +61,7 @@ namespace InmobiliariaSpartano.Models
             return res;
         }*/
 
-        public int Altaa(Propietario p)
+        /*public int Altaa(Propietario p)
         {
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -84,7 +84,7 @@ namespace InmobiliariaSpartano.Models
                 }
             }
             return res;
-        }
+        }*/
 
         public Propietario ObtenerPorId(int id)
         {
