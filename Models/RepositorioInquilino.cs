@@ -112,7 +112,7 @@ namespace InmobiliariaSpartano.Models
             return res;
         }*/
 
-        public Inquilino ObtenerPorId(int id)
+        /*public Inquilino ObtenerPorId(int id)
         {
             Inquilino res;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -177,6 +177,6 @@ namespace InmobiliariaSpartano.Models
                 }
             }
             return res;
-        }
+        }*/
     }
 }

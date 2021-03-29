@@ -1,0 +1,82 @@
+﻿@model InmobiliariaSpartano.Models.Inmueble
+
+@{
+    ViewData["Title"] = "Create";
+    string error = ViewData["Error"]?.ToString();
+}
+
+<h1>Crear</h1>
+<p>@error</p>
+<h4>Inmueble</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PropietarioId" class="control-label"></label>
+                <select asp-for="PropietarioId" class="form-control">
+                    <option value="" hidden selected>Seleccionar</option>
+                    @foreach (var propietario in ViewData["Propietarios"] as List<Propietario>)
+                    {
+                        <option value="@propietario.Id">
+                            @propietario.Nombre @propietario.Apellido - (@propietario.Dni)
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="PropietarioId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Uso" class="control-label"></label>
+                <select asp-for="Uso" class="form-control">
+                    <option value="" hidden selected>Seleccionar</option>
+                    <option value="Residencial">Residencial</option>
+                    <option value="Comercial">Comercial</option>
+                </select>
+                <span asp-validation-for="Uso" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tipo" class="control-label"></label>
+                <select asp-for="Tipo" class="form-control">
+                    <option value="" hidden selected>Seleccionar</option>
+                    <option value="Casa">Casa</option>
+                    <option value="Departamento">Departamento</option>
+                    <option value="Local">Local</option>
+                    <option value="Depósito">Depósito</option>
+                </select>
+                <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label">Precio mensual</label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ambientes" class="control-label"></label>
+                <input asp-for="Ambientes" class="form-control" />
+                <span asp-validation-for="Ambientes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Superficie" class="control-label">Superficie (m²)</label>
+                <input asp-for="Superficie" class="form-control" />
+                <span asp-validation-for="Superficie" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Volver</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

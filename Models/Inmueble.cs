@@ -9,7 +9,7 @@ namespace InmobiliariaSpartano.Models
 {
     public class Inmueble : Entidad
     {
-        [Required, ForeignKey("PropietarioId")]
+        [Required, ForeignKey("PropietarioId"), Display(Name = "Propietario")]
         public int PropietarioId { get; set; }
         [Required]
         public string Direccion { get; set; }

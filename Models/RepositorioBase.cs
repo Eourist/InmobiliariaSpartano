@@ -54,8 +54,8 @@ namespace InmobiliariaSpartano.Models
 
                 using (var command = new SqlCommand(sql, connection))
                 {
-                    for (int i = 0; i < columnas.Length; i++)
-                        command.Parameters.AddWithValue($"@{columnas[i]}", e.GetType().GetProperty(columnas[i]).GetValue(e, null));
+                    foreach (var col in columnas)
+                        command.Parameters.AddWithValue(col, e.GetType().GetProperty(col).GetValue(e));
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -89,8 +89,8 @@ namespace InmobiliariaSpartano.Models
 
                 using (var command = new SqlCommand(sql, connection))
                 {
-                    for (int i = 0; i < columnas.Length; i++)
-                        command.Parameters.AddWithValue($"@{columnas[i]}", e.GetType().GetProperty(columnas[i]).GetValue(e, null));
+                    foreach (var col in columnas)
+                        command.Parameters.AddWithValue(col, e.GetType().GetProperty(col).GetValue(e));
 
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
@@ -101,12 +101,12 @@ namespace InmobiliariaSpartano.Models
             return res;
         }
 
-        /*public Entidad ObtenerPorId(int id)
+        public T ObtenerPorId<T>(int id) where T : Entidad, new()
         {
-            Entidad res;
+            T res = new T();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT ";
+                string sql = $"SELECT Id, ";
                 for (int i = 0; i < columnas.Length; i++)
                 {
                     if (i == columnas.Length - 1)
@@ -115,20 +115,53 @@ namespace InmobiliariaSpartano.Models
                         sql += $"{columnas[i]}, ";
                 }
                 sql += $" FROM {tabla} WHERE Id = {id};";
-
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
                     SqlDataReader reader = command.ExecuteReader();
                     reader.Read();
-                    
-                    // constructor de que??
-                    //res = new Entidad()
 
+                    foreach (var col in columnas)
+                        res.GetType().GetProperty(col).SetValue(res, reader[col]);
+                    res.Id = reader.GetInt32(0);
                     connection.Close();
                 }
             }
             return res;
-        }*/
+        }
+
+        public List<T> ObtenerTodos<T>() where T : Entidad, new()
+        {
+            List<T> res = new List<T>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT Id, ";
+                for (int i = 0; i < columnas.Length; i++)
+                {
+                    if (i == columnas.Length - 1)
+                        sql += columnas[i];
+                    else
+                        sql += $"{columnas[i]}, ";
+                }
+                sql += $" FROM {tabla};";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        T item = new T();
+                        foreach (var col in columnas)
+                        {
+                            item.GetType().GetProperty(col).SetValue(item, reader[col]);
+                            item.Id = reader.GetInt32(0);
+                        }
+                        res.Add(item);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
     }
 }

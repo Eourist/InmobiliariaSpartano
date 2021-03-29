@@ -86,7 +86,7 @@ namespace InmobiliariaSpartano.Models
             return res;
         }*/
 
-        public Propietario ObtenerPorId(int id)
+        /*public Propietario ObtenerPorId(int id)
         {
             Propietario res;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -141,6 +141,6 @@ namespace InmobiliariaSpartano.Models
                 }
             }
             return res;
-        }
+        }*/
     }
 }

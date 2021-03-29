@@ -24,16 +24,15 @@ namespace InmobiliariaSpartano.Controllers
         public ActionResult Index()
         {
             /*List<Propietario> propietarios = repositorioPropietario.ObtenerTodos();
-            
             ViewBag.Propietarios = propietarios;*/
-            ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos();
+            ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
             return View();
         }
 
         // GET: TestController/Details/5
         public ActionResult Details(int id)
         {
-            return View(repositorioPropietario.ObtenerPorId(id));
+            return View(repositorioPropietario.ObtenerPorId<Propietario>(id));
         }
 
         // GET: TestController/Create
@@ -62,7 +61,7 @@ namespace InmobiliariaSpartano.Controllers
         // GET: TestController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(repositorioPropietario.ObtenerPorId(id));
+            return View(repositorioPropietario.ObtenerPorId<Propietario>(id));
         }
 
         // POST: TestController/Edit/5
@@ -72,7 +71,7 @@ namespace InmobiliariaSpartano.Controllers
         {
             try
             {
-                Propietario p = repositorioPropietario.ObtenerPorId(id);
+                Propietario p = repositorioPropietario.ObtenerPorId<Propietario>(id);
                 p.Nombre = collection["Nombre"];
                 p.Apellido = collection["Apellido"];
                 p.Dni = collection["Dni"];
@@ -85,14 +84,14 @@ namespace InmobiliariaSpartano.Controllers
             catch (Exception e)
             {
                 ViewData["Error"] = e.Message;
-                return View(repositorioPropietario.ObtenerPorId(id));
+                return View(repositorioPropietario.ObtenerPorId<Propietario>(id));
             }
         }
 
         // GET: TestController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View(repositorioPropietario.ObtenerPorId(id));
+            return View(repositorioPropietario.ObtenerPorId<Propietario>(id));
         }
 
         // POST: TestController/Delete/5
@@ -108,7 +107,7 @@ namespace InmobiliariaSpartano.Controllers
             catch (Exception e)
             {
                 ViewData["Error"] = e.Message;
-                return View(repositorioPropietario.ObtenerPorId(id));
+                return View(repositorioPropietario.ObtenerPorId<Propietario>(id));
             }
         }
     }
