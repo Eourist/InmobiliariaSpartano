@@ -1,7 +1,7 @@
 ﻿@model InmobiliariaSpartano.Models.Inmueble
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear";
     string error = ViewData["Error"]?.ToString();
 }
 
@@ -20,7 +20,7 @@
                     @foreach (var propietario in ViewData["Propietarios"] as List<Propietario>)
                     {
                         <option value="@propietario.Id">
-                            @propietario.Nombre @propietario.Apellido - (@propietario.Dni)
+                            @propietario.ToString()
                         </option>
                     }
                 </select>
@@ -53,21 +53,21 @@
             </div>
             <div class="form-group">
                 <label asp-for="Precio" class="control-label">Precio mensual</label>
-                <input asp-for="Precio" class="form-control" />
+                <input type="number" asp-for="Precio" class="form-control" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Ambientes" class="control-label"></label>
-                <input asp-for="Ambientes" class="form-control" />
+                <input type="number" asp-for="Ambientes" class="form-control" />
                 <span asp-validation-for="Ambientes" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Superficie" class="control-label">Superficie (m²)</label>
-                <input asp-for="Superficie" class="form-control" />
+                <label asp-for="Superficie" class="control-label"></label>
+                <input type="number" asp-for="Superficie" class="form-control" />
                 <span asp-validation-for="Superficie" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>

@@ -13,11 +13,13 @@ namespace InmobiliariaSpartano.Controllers
     {
         private readonly IConfiguration configuration;
         private RepositorioInmueble repositorioInmueble;
+        private RepositorioPropietario repositorioPropietario;
 
         public InmuebleController(IConfiguration configuration)
         {
             this.configuration = configuration;
             repositorioInmueble = new RepositorioInmueble(configuration);
+            repositorioPropietario = new RepositorioPropietario(configuration);
         }
 
         // GET: InmuebleController
@@ -35,24 +37,34 @@ namespace InmobiliariaSpartano.Controllers
         // GET: InmuebleController/Create
         public ActionResult Create()
         {
-            RepositorioPropietario rp = new RepositorioPropietario(configuration);
-            ViewData["Propietarios"] = rp.ObtenerTodos<Propietario>();
+            ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
             return View();
         }
 
         // POST: InmuebleController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Inmueble i)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
-                repositorioInmueble.Alta(i);
+                Inmueble e = new Inmueble()
+                {
+                    PropietarioId = Convert.ToInt32(collection["PropietarioId"]),
+                    Direccion = collection["Direccion"],
+                    Uso = collection["Uso"],
+                    Tipo = collection["Tipo"],
+                    Precio = Convert.ToInt32(collection["Precio"]),
+                    Ambientes = Convert.ToInt32(collection["Ambientes"]),
+                    Superficie = Convert.ToInt32(collection["Superficie"])
+                };
+                repositorioInmueble.Alta(e);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = ex.Message;
+                ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
                 return View();
             }
         }
@@ -60,24 +72,35 @@ namespace InmobiliariaSpartano.Controllers
         // GET: InmuebleController/Edit/5
         public ActionResult Edit(int id)
         {
-            RepositorioPropietario rp = new RepositorioPropietario(configuration);
-            ViewData["Propietarios"] = rp.ObtenerTodos<Propietario>();
+            ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
             return View(repositorioInmueble.ObtenerPorId<Inmueble>(id));
         }
 
         // POST: InmuebleController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Inmueble i)
+        public ActionResult Edit(int id, IFormCollection collection)
         {
             try
             {
-                repositorioInmueble.Editar(i);
+                Inmueble e = new Inmueble()
+                {
+                    Id = id,
+                    PropietarioId = Convert.ToInt32(collection["PropietarioId"]),
+                    Direccion = collection["Direccion"],
+                    Uso = collection["Uso"],
+                    Tipo = collection["Tipo"],
+                    Precio = Convert.ToInt32(collection["Precio"]),
+                    Ambientes = Convert.ToInt32(collection["Ambientes"]),
+                    Superficie = Convert.ToInt32(collection["Superficie"])
+                };
+                repositorioInmueble.Editar(e);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = ex.Message;
+                ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
                 return View(repositorioInmueble.ObtenerPorId<Inmueble>(id));
             }
         }
@@ -98,9 +121,9 @@ namespace InmobiliariaSpartano.Controllers
                 repositorioInmueble.Eliminar(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = ex.Message;
                 return View(repositorioInmueble.ObtenerPorId<Inmueble>(id));
             }
         }

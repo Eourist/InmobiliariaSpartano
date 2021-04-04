@@ -15,31 +15,30 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" maxlength="50" class="form-control" required/>
+                <input asp-for="Nombre" class="form-control"/>
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Apellido" class="control-label"></label>
-                <input asp-for="Apellido" maxlength="50" class="form-control" required/>
+                <input asp-for="Apellido" class="form-control"/>
                 <span asp-validation-for="Apellido" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Dni" class="control-label"></label>
-                <input maxlength="8" asp-for="Dni" class="form-control" required/>
+                <input type="number" asp-for="Dni" class="form-control"/>
                 <span asp-validation-for="Dni" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Telefono" class="control-label"></label>
-                <input maxlength="15" asp-for="Telefono" class="form-control" required/>
+                <input type="number" asp-for="Telefono" class="form-control"/>
                 <span asp-validation-for="Telefono" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" maxlength="50" class="form-control" required/>
+                <input asp-for="Email" class="form-control"/>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="hidden" asp-for="Id" value="@Model.Id" />
                 <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>

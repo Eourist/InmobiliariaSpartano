@@ -23,8 +23,7 @@ namespace InmobiliariaSpartano.Controllers
         // GET: TestController
         public ActionResult Index()
         {
-            ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
-            return View();
+            return View(repositorioInquilino.ObtenerTodos<Inquilino>());
         }
 
         // GET: TestController/Details/5
@@ -42,16 +41,16 @@ namespace InmobiliariaSpartano.Controllers
         // POST: TestController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Inquilino i)
+        public ActionResult Create(Inquilino e)
         {
             try
             {
-                repositorioInquilino.Alta(i);
+                repositorioInquilino.Alta(e);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = ex.Message;
                 return View();
             }
         }
@@ -65,31 +64,16 @@ namespace InmobiliariaSpartano.Controllers
         // POST: TestController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Inquilino e)
         {
             try
             {
-                Inquilino p = new Inquilino
-                {
-                    Id = Convert.ToInt32(collection["Id"]),
-                    Nombre = collection["Nombre"],
-                    Apellido = collection["Apellido"],
-                    Dni = collection["Dni"],
-                    Telefono = collection["Telefono"],
-                    Email = collection["Email"],
-                    LugarTrabajo = collection["LugarTrabajo"],
-                    NombreGarante = collection["NombreGarante"],
-                    ApellidoGarante = collection["ApellidoGarante"],
-                    DniGarante = collection["DniGarante"],
-                    TelefonoGarante = collection["TelefonoGarante"],
-                    EmailGarante = collection["EmailGarante"]
-                };
-                repositorioInquilino.Editar(p);
+                repositorioInquilino.Editar(e);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = ex.Message;
                 return View(repositorioInquilino.ObtenerPorId<Inquilino>(id));
             }
         }
@@ -110,9 +94,9 @@ namespace InmobiliariaSpartano.Controllers
                 repositorioInquilino.Eliminar(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = ex.Message;
                 return View(repositorioInquilino.ObtenerPorId<Inquilino>(id));
             }
         }

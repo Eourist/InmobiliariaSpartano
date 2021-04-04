@@ -1,0 +1,65 @@
+﻿@model InmobiliariaSpartano.Models.Contrato
+
+@{
+    ViewData["Title"] = "Crear";
+    string error = ViewData["Error"]?.ToString();
+}
+
+<h1>Crear</h1>
+<p>@error</p>
+<h4>Contrato</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="InmuebleId" class="control-label"></label>
+                <select asp-for="InmuebleId" class="form-control">
+                    <option value="" hidden selected>Seleccionar</option>
+                    @foreach (var inmueble in ViewData["Inmuebles"] as List<Inmueble>)
+                    {
+                        <option value="@inmueble.Id">
+                            @inmueble.ToString()
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="InmuebleId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InquilinoId" class="control-label"></label>
+                <select asp-for="InquilinoId" class="form-control">
+                    <option value="" hidden selected>Seleccionar</option>
+                    @foreach (var inquilino in ViewData["Inquilinos"] as List<Inquilino>)
+                    {
+                        <option value="@inquilino.Id">
+                            @inquilino.ToString()
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="InquilinoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaDesde" class="control-label"></label>
+                <input type="date" asp-for="FechaDesde" class="form-control" />
+                <span asp-validation-for="FechaDesde" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaHasta" class="control-label"></label>
+                <input type="date" asp-for="FechaHasta" class="form-control" />
+                <span asp-validation-for="FechaHasta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Volver</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

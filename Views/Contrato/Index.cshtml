@@ -1,10 +1,10 @@
-﻿@model IEnumerable<InmobiliariaSpartano.Models.Inquilino>
+﻿@model IEnumerable<InmobiliariaSpartano.Models.Contrato>
 
 @{
-    ViewData["Title"] = "Inquilinos";
+    ViewData["Title"] = "Contratos";
 }
 
-<h1>Inquilinos</h1>
+<h1>Contratos</h1>
 
 <p>
     <a asp-action="Create">Crear</a>
@@ -16,19 +16,16 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @Html.DisplayNameFor(model => model.Inmueble)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Apellido)
+                @Html.DisplayNameFor(model => model.Inquilino)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dni)
+                @Html.DisplayNameFor(model => model.FechaDesde)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.FechaHasta)
             </th>
             <th></th>
         </tr>
@@ -40,19 +37,16 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
+                @item.Inmueble.ToString()
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Apellido)
+                @item.Inquilino.ToString()
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Dni)
+                @item.FechaDesde.ToShortDateString()
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Telefono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
+                @item.FechaHasta.ToShortDateString()
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |

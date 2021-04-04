@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Propietarios";
-    List<Propietario> propietarios = ViewData["Propietarios"] as List<Propietario>;
 }
 
 <h1>Propietarios</h1>
@@ -35,7 +34,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in propietarios) {
+@foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
