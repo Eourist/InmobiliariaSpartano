@@ -31,6 +31,11 @@ namespace InmobiliariaSpartano.Controllers
         {
             return View(repositorioInquilino.ObtenerPorId<Inquilino>(id));
         }
+        public ActionResult Contratos(int id)
+        {
+            RepositorioContrato repositorioContrato = new RepositorioContrato(configuration);
+            return View(repositorioContrato.ObtenerPorInquilino(id));
+        }
 
         // GET: InquilinoController/Create
         public ActionResult Create()

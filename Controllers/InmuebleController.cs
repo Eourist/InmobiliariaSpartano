@@ -56,8 +56,10 @@ namespace InmobiliariaSpartano.Controllers
                     Tipo = collection["Tipo"],
                     Precio = Convert.ToInt32(collection["Precio"]),
                     Ambientes = Convert.ToInt32(collection["Ambientes"]),
-                    Superficie = Convert.ToInt32(collection["Superficie"])
+                    Superficie = Convert.ToInt32(collection["Superficie"]),
+                    Disponible = 1
                 };
+
                 repositorioInmueble.Alta(e);
                 return RedirectToAction(nameof(Index));
             }
@@ -83,17 +85,15 @@ namespace InmobiliariaSpartano.Controllers
         {
             try
             {
-                Inmueble e = new Inmueble()
-                {
-                    Id = id,
-                    PropietarioId = Convert.ToInt32(collection["PropietarioId"]),
-                    Direccion = collection["Direccion"],
-                    Uso = collection["Uso"],
-                    Tipo = collection["Tipo"],
-                    Precio = Convert.ToInt32(collection["Precio"]),
-                    Ambientes = Convert.ToInt32(collection["Ambientes"]),
-                    Superficie = Convert.ToInt32(collection["Superficie"])
-                };
+                Inmueble e = repositorioInmueble.ObtenerPorId<Inmueble>(id);
+                e.PropietarioId = Convert.ToInt32(collection["PropietarioId"]);
+                e.Direccion = collection["Direccion"];
+                e.Uso = collection["Uso"];
+                e.Tipo = collection["Tipo"];
+                e.Precio = Convert.ToInt32(collection["Precio"]);
+                e.Ambientes = Convert.ToInt32(collection["Ambientes"]);
+                e.Superficie = Convert.ToInt32(collection["Superficie"]);
+
                 repositorioInmueble.Editar(e);
                 return RedirectToAction(nameof(Index));
             }

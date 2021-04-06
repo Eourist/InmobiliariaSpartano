@@ -9,75 +9,77 @@
 <p>@error</p>
 <h4>Inquilino</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<form asp-action="Create" class="w-100">
+    <div class="row">
+        <div class="col-md-4">
+            <h5>Datos del Inquilino</h5>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control"/>
+                <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Apellido" class="control-label"></label>
-                <input asp-for="Apellido" class="form-control"/>
+                <input asp-for="Apellido" class="form-control" />
                 <span asp-validation-for="Apellido" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Dni" class="control-label"></label>
-                <input type="number" asp-for="Dni" class="form-control"/>
+                <input type="number" asp-for="Dni" class="form-control" />
                 <span asp-validation-for="Dni" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Telefono" class="control-label"></label>
-                <input type="number" asp-for="Telefono" class="form-control"/>
+                <input type="number" asp-for="Telefono" class="form-control" />
                 <span asp-validation-for="Telefono" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control"/>
+                <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LugarTrabajo" class="control-label"></label>
-                <input asp-for="LugarTrabajo" class="form-control"/>
+                <input asp-for="LugarTrabajo" class="form-control" />
                 <span asp-validation-for="LugarTrabajo" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h5>Datos del Garante</h5>
             <div class="form-group">
-                <label asp-for="NombreGarante" class="control-label"></label>
-                <input asp-for="NombreGarante" class="form-control"/>
+                <label asp-for="NombreGarante" class="control-label">Nombre</label>
+                <input asp-for="NombreGarante" class="form-control" />
                 <span asp-validation-for="NombreGarante" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ApellidoGarante" class="control-label"></label>
-                <input asp-for="ApellidoGarante" class="form-control"/>
+                <label asp-for="ApellidoGarante" class="control-label">Apellido</label>
+                <input asp-for="ApellidoGarante" class="form-control" />
                 <span asp-validation-for="ApellidoGarante" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DniGarante" class="control-label"></label>
-                <input type="number" asp-for="DniGarante" class="form-control"/>
+                <label asp-for="DniGarante" class="control-label">Dni</label>
+                <input type="number" asp-for="DniGarante" class="form-control" />
                 <span asp-validation-for="DniGarante" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TelefonoGarante" class="control-label"></label>
-                <input type="number" asp-for="TelefonoGarante" class="form-control"/>
+                <label asp-for="TelefonoGarante" class="control-label">Telefono</label>
+                <input type="number" asp-for="TelefonoGarante" class="form-control" />
                 <span asp-validation-for="TelefonoGarante" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmailGarante" class="control-label"></label>
-                <input asp-for="EmailGarante" class="form-control"/>
+                <label asp-for="EmailGarante" class="control-label">Email</label>
+                <input asp-for="EmailGarante" class="form-control" />
                 <span asp-validation-for="EmailGarante" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Volver</a>
-</div>
+    <div class="form-group">
+        <input type="submit" value="Crear" class="btn btn-primary" /> |
+        <a asp-action="Index">Volver</a>
+    </div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
