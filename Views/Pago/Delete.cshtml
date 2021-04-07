@@ -34,6 +34,6 @@
 
     <form asp-action="Delete">
         <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver</a>
+        <a asp-action="Index" asp-route-ContratoId="@Model.ContratoId">Volver</a>
     </form>
 </div>

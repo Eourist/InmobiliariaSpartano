@@ -38,7 +38,7 @@ namespace InmobiliariaSpartano.Models
             return lista;
         }
 
-        public List<Pago> ObtenerPagosContrato(int ContratoId)
+        public List<Pago> ObtenerPorContrato(int ContratoId)
         {
             List<Pago> res = new List<Pago>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -62,11 +62,8 @@ namespace InmobiliariaSpartano.Models
                         item.Id = reader.GetInt32(0);
                         item.ContratoId = reader.GetInt32(1);
                         item.Fecha = reader.GetDateTime(2);
-                        /*foreach (var col in columnas)
-                        {
-                            item.GetType().GetProperty(col).SetValue(item, reader[col]);
-                            item.Id = reader.GetInt32(0);
-                        }*/
+                        item.Contrato = repContrato.ObtenerPorId<Contrato>(item.ContratoId);
+
                         res.Add(item);
                     }
                     connection.Close();

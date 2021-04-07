@@ -33,7 +33,6 @@ namespace InmobiliariaSpartano.Controllers
         // GET: ContratoController/Details/5
         public ActionResult Details(int id)
         {
-
             return View(repositorioContrato.ObtenerPorId<Contrato>(id));
         }
 
@@ -91,7 +90,7 @@ namespace InmobiliariaSpartano.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection) // POR AHORA NO SE PUEDEN EDITAR CONTRATOS
         {
-            // FALTA CAMBIAR LA DISPONIBILIDAD DE LOS INMUEBLES SI ES QUE SE MODIFICA
+            // FALTARIA CAMBIAR LA DISPONIBILIDAD DE LOS INMUEBLES SI ES QUE SE MODIFICA
             return RedirectToAction(nameof(Index)); // 
             try
             {

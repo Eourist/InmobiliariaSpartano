@@ -10,8 +10,8 @@ namespace InmobiliariaSpartano.Models
     public class Pago : Entidad
     {
         [Required(ErrorMessage = "Campo obligatorio"),
-            ForeignKey("InmuebleId"),
-            Display(Name = "Inmueble")]
+            ForeignKey("ContratoId"),
+            Display(Name = "Contrato")]
         public int ContratoId { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio")]

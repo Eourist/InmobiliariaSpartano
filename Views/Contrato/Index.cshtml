@@ -49,9 +49,9 @@
                 @item.FechaHasta.ToShortDateString()
             </td>
             <td>
-                <!--@Html.ActionLink("Editar", "Edit", new { id = item.Id }) |-->
                 @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id }) |
+                <a asp-route-ContratoId="@item.Id" asp-controller="Pago" asp-action="Index">Pagos</a>
             </td>
         </tr>
 }
