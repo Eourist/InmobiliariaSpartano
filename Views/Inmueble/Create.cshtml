@@ -2,11 +2,15 @@
 
 @{
     ViewData["Title"] = "Crear";
-    string error = ViewData["Error"]?.ToString();
 }
 
 <h1>Crear</h1>
-<p>@error</p>
+@if (!String.IsNullOrEmpty((string)ViewData["Error"]))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
 <h4>Inmueble</h4>
 <hr />
 <div class="row">
@@ -53,28 +57,25 @@
             </div>
             <div class="form-group">
                 <label asp-for="Precio" class="control-label">Precio mensual</label>
-                <input type="number" asp-for="Precio" class="form-control" />
+                <input asp-for="Precio" class="form-control" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Ambientes" class="control-label"></label>
-                <input type="number" asp-for="Ambientes" class="form-control" />
+                <input asp-for="Ambientes" class="form-control" />
                 <span asp-validation-for="Ambientes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Superficie" class="control-label"></label>
-                <input type="number" asp-for="Superficie" class="form-control" />
+                <input asp-for="Superficie" class="form-control" />
                 <span asp-validation-for="Superficie" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" /> |
+                <a asp-action="Index">Volver</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Volver</a>
 </div>
 
 @section Scripts {

@@ -2,11 +2,15 @@
 
 @{
     ViewData["Title"] = "Editar";
-    string error = ViewData["Error"]?.ToString();
 }
 
 <h1>Editar</h1>
-<p>@error</p>
+@if (!String.IsNullOrEmpty((string)ViewData["Error"]))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
 <h4>Inquilino</h4>
 <hr />
 <form asp-action="Edit">
@@ -76,7 +80,7 @@
         </div>
     </div>
     <div class="form-group">
-        <input type="submit" value="Guardar" class="btn btn-primary" />
+        <input type="submit" value="Guardar" class="btn btn-primary" /> |
         <a asp-action="Index">Volver</a>
     </div>
 </form>

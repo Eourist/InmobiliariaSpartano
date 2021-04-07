@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -104,7 +105,10 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                string msg = ex.Message;
+                if (ex is SqlException && (ex as SqlException).Number == 547)
+                    msg = "No se puede eliminar el Propietario porque existe un Inmueble a nombre suyo.";
+                ViewData["Error"] = msg;
                 return View(repositorioPropietario.ObtenerPorId<Propietario>(id));
             }
         }

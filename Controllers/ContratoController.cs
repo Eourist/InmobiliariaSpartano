@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -74,11 +75,11 @@ namespace InmobiliariaSpartano.Controllers
         }
 
         // GET: ContratoController/Edit/5
-        public ActionResult Edit(int id) // POR AHORA NO SE PUEDEN EDITAR CONTRATOS
+        public ActionResult Edit(int id)
         {
-            return RedirectToAction(nameof(Index)); // 
-            List<Inmueble> inmuebles = repositorioInmueble.ObtenerDisponibles(); // mostrar los disponibles + el seleccionado actualmente
-            inmuebles.Add(repositorioInmueble.ObtenerPorId<Inmueble>(repositorioContrato.ObtenerPorId<Contrato>(id).InmuebleId));
+            List<Inmueble> inmuebles = repositorioInmueble.ObtenerDisponibles(); // Mostrar los disponibles + el seleccionado actualmente
+            Inmueble actual = repositorioInmueble.ObtenerPorId<Inmueble>(repositorioContrato.ObtenerPorId<Contrato>(id).InmuebleId);
+            inmuebles.Insert(0, actual);
 
             ViewData["Inmuebles"] = inmuebles;
             ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
@@ -88,12 +89,11 @@ namespace InmobiliariaSpartano.Controllers
         // POST: ContratoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection) // POR AHORA NO SE PUEDEN EDITAR CONTRATOS
+        public ActionResult Edit(int id, IFormCollection collection)
         {
-            // FALTARIA CAMBIAR LA DISPONIBILIDAD DE LOS INMUEBLES SI ES QUE SE MODIFICA
-            return RedirectToAction(nameof(Index)); // 
             try
             {
+
                 Contrato e = new Contrato()
                 {
                     Id = id,
@@ -103,15 +103,25 @@ namespace InmobiliariaSpartano.Controllers
                     FechaHasta = DateTime.Parse(collection["FechaHasta"])
                 };
 
+                Contrato anterior = repositorioContrato.ObtenerPorId<Contrato>(id);
                 repositorioContrato.Editar(e);
+
+                // Si se cambió el Inmueble, actualizar la disponibilidad:
+                if (anterior.InmuebleId != e.InmuebleId)
+                {
+                    repositorioInmueble.CambiarDisponibilidad(anterior.InmuebleId);
+                    repositorioInmueble.CambiarDisponibilidad(e.InmuebleId);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
-                List<Inmueble> inmuebles = repositorioInmueble.ObtenerDisponibles(); // mostrar los disponibles + el seleccionado actualmente
-                inmuebles.Add(repositorioInmueble.ObtenerPorId<Inmueble>(repositorioContrato.ObtenerPorId<Contrato>(id).InmuebleId));
+                List<Inmueble> inmuebles = repositorioInmueble.ObtenerDisponibles(); // Mostrar los disponibles + el seleccionado actualmente
+                Inmueble actual = repositorioInmueble.ObtenerPorId<Inmueble>(repositorioContrato.ObtenerPorId<Contrato>(id).InmuebleId);
+                inmuebles.Insert(0, actual);
 
+                ViewData["Error"] = ex.Message;
                 ViewData["Inmuebles"] = inmuebles;
                 ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
                 return View(repositorioContrato.ObtenerPorId<Contrato>(id));
@@ -133,14 +143,17 @@ namespace InmobiliariaSpartano.Controllers
             {
                 Contrato e = repositorioContrato.ObtenerPorId<Contrato>(id);
 
-                repositorioInmueble.CambiarDisponibilidad(e.InmuebleId);
                 repositorioContrato.Eliminar(e.Id);
+                repositorioInmueble.CambiarDisponibilidad(e.InmuebleId);
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                string msg = ex.Message;
+                if (ex is SqlException && (ex as SqlException).Number == 547)
+                    msg = "No se puede eliminar este Contrato porque ya se realizaron Pagos sobre él.";
+                ViewData["Error"] = msg;
                 return View(repositorioContrato.ObtenerPorId<Contrato>(id));
             }
         }

@@ -2,11 +2,15 @@
 
 @{
     ViewData["Title"] = "Crear";
-    string error = ViewData["Error"]?.ToString();
 }
 
 <h1>Crear</h1>
-<p>@error</p>
+@if (!String.IsNullOrEmpty((string)ViewData["Error"]))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
 <h4>Inquilino</h4>
 <hr />
 <form asp-action="Create" class="w-100">
