@@ -15,7 +15,7 @@ namespace InmobiliariaSpartano.Models
         {
             repContrato = new RepositorioContrato(configuration);
             this.tabla = "Pagos";
-            this.columnas = new string[2] { "ContratoId", "Fecha" };
+            this.columnas = new string[3] { "ContratoId", "Fecha", "Importe" };
         }
 
         new public Pago ObtenerPorId<T>(int id)
@@ -62,6 +62,7 @@ namespace InmobiliariaSpartano.Models
                         item.Id = reader.GetInt32(0);
                         item.ContratoId = reader.GetInt32(1);
                         item.Fecha = reader.GetDateTime(2);
+                        item.Importe = reader.GetInt32(3);
                         item.Contrato = repContrato.ObtenerPorId<Contrato>(item.ContratoId);
 
                         res.Add(item);

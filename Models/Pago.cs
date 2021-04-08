@@ -17,12 +17,16 @@ namespace InmobiliariaSpartano.Models
         [Required(ErrorMessage = "Campo obligatorio")]
         public DateTime Fecha { get; set; }
 
+        [Required(ErrorMessage = "Campo obligatorio"),
+            StringLength(8, MinimumLength = 1, ErrorMessage = "Ingrese un importe válido")]
+        public int Importe { get; set; }
+
         [Display(Name = "Contrato")]
         public Contrato Contrato { get; set; }
 
         public override string ToString()
         {
-            return $"{Contrato.Id}/{Id} - ({Fecha.ToShortDateString()})";
+            return $"#{Contrato.Id}/{Id} {Fecha.ToShortDateString()} ${Importe}";
         }
     }
 }

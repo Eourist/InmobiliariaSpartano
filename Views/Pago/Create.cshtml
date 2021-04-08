@@ -17,7 +17,7 @@
             <div class="form-group">
                 <label asp-for="ContratoId" class="control-label"></label>
                 <input asp-for="ContratoId" type="hidden" value="@contrato.Id" />
-                <input class="form-control" value="@contrato.ToString()"disabled />
+                <input class="form-control" value="@contrato.ToString()" disabled />
                 <span asp-validation-for="ContratoId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -26,14 +26,17 @@
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                <label asp-for="Importe" class="control-label"></label>
+                <small> - El precio establecido en el contrato es de $@contrato.Inmueble.Precio</small>
+                <input asp-for="Importe" class="form-control" />
+                <span asp-validation-for="Importe" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" /> |
+                <a asp-action="Index" asp-route-ContratoId="@contrato.Id">Volver</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index" asp-route-ContratoId="@contrato.Id">Volver</a>
 </div>
 
 @section Scripts {

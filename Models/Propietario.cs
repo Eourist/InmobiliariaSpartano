@@ -35,7 +35,7 @@ namespace InmobiliariaSpartano.Models
 
         public override string ToString()
         {
-            return $"{Id} - {Nombre} {Apellido}";
+            return $"#{Id} {Nombre[0].ToString().ToUpper()}. {Apellido}";
         }
     }
 }

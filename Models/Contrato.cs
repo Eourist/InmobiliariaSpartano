@@ -19,10 +19,12 @@ namespace InmobiliariaSpartano.Models
             Display(Name = "Inquilino")]
         public int InquilinoId { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio")]
+        [Required(ErrorMessage = "Campo obligatorio"),
+            Display(Name = "Fecha inicial")]
         public DateTime FechaDesde { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio")]
+        [Required(ErrorMessage = "Campo obligatorio"),
+            Display(Name = "Fecha final")]
         public DateTime FechaHasta { get; set; }
 
         [Display(Name = "Inquilino")]
@@ -33,7 +35,7 @@ namespace InmobiliariaSpartano.Models
 
         public override string ToString()
         {
-            return $"{Id} - ({FechaDesde.Month}/{FechaDesde.Year} - {FechaHasta.Month}/{FechaHasta.Year})";
+            return $"#{Id} - {Inmueble.Direccion} ({FechaDesde.Month}/{FechaDesde.Year} - {FechaHasta.Month}/{FechaHasta.Year})";
         }
     }
 }

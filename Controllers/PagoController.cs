@@ -54,17 +54,24 @@ namespace InmobiliariaSpartano.Controllers
         // POST: PagoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Pago e)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
+                Pago e = new Pago()
+                {
+                    ContratoId = Convert.ToInt32(collection["ContratoId"]),
+                    Fecha = DateTime.Parse(collection["Fecha"]),
+                    Importe = Convert.ToInt32(collection["Importe"])
+                };
+
                 repositorioPago.Alta(e);
                 return RedirectToAction(nameof(Index), new { ContratoId = e.ContratoId });
             }
             catch (Exception ex)
             {
                 ViewData["Error"] = ex.Message;
-                ViewData["Contratos"] = repositorioContrato.ObtenerTodos<Contrato>();
+                ViewData["Contrato"] = repositorioContrato.ObtenerPorId<Contrato>(Convert.ToInt32(collection["ContratoId"]));
                 return View();
             }
         }

@@ -16,10 +16,16 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            #@Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Dueño)
         </dt>
         <dd class="col-sm-10">
-            @Model.Dueño.Nombre @Model.Dueño.Apellido - (@Model.Dueño.Dni)
+            @Model.Dueño.ToString()
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Direccion)
@@ -43,7 +49,7 @@
             @Html.DisplayNameFor(model => model.Precio)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Precio)
+            $@Html.DisplayFor(model => model.Precio)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Ambientes)
@@ -55,7 +61,7 @@
             @Html.DisplayNameFor(model => model.Superficie)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Superficie)
+            @Html.DisplayFor(model => model.Superficie)m²
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Disponible)

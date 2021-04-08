@@ -33,7 +33,6 @@ namespace InmobiliariaSpartano.Models
         public int Ambientes { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"),
-            Display(Name = "Superficie (m²)"),
             StringLength(8, MinimumLength = 1, ErrorMessage = "Ingrese una superficie válida")]
         public int Superficie { get; set; }
 
@@ -44,7 +43,7 @@ namespace InmobiliariaSpartano.Models
 
         public override string ToString()
         {
-            return $"{Id} - {Direccion}";
+            return $"#{Id} {Direccion} | {Dueño.Nombre[0].ToString().ToUpper()}. {Dueño.Apellido}";
         }
     }
 }

@@ -8,7 +8,7 @@
 
 <p>
     <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-plus-square"></i> Crear</a>
-    <a asp-action="" class="btn btn-outline-primary"><i class="fas fa-filter"></i> Filtrar</a>
+    <a asp-action="" class="btn btn-outline-primary disabled"><i class="fas fa-filter"></i> Filtrar</a>
 </p>
 <table class="table">
     <thead>
@@ -35,7 +35,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                #@Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
                 @item.Inmueble.ToString()
@@ -50,16 +50,16 @@
                 @item.FechaHasta.ToShortDateString()
             </td>
             <td>
-                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Details" class="btn btn-sm btn-outline-primary" title="Detalles">
+                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
                     <i class="fas fa-file-alt"></i>
                 </a>
-                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Delete" class="btn btn-sm btn-outline-primary" title="Eliminar">
+                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Delete" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Eliminar">
                     <i class="fas fa-trash-alt"></i>
                 </a>
-                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Edit" class="btn btn-sm btn-outline-primary" title="Editar">
+                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Edit" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Editar">
                     <i class="fas fa-edit"></i>
                 </a>
-                <a asp-route-ContratoId="@item.Id" asp-controller="Pago" asp-action="Index" class="btn btn-sm btn-outline-primary" title="Pagos">
+                <a asp-route-ContratoId="@item.Id" asp-controller="Pago" asp-action="Index" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Pagos">
                     <i class="fas fa-money-bill-wave-alt"></i>
                 </a>
             </td>
