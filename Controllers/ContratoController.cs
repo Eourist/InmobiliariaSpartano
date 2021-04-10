@@ -34,7 +34,7 @@ namespace InmobiliariaSpartano.Controllers
         // GET: ContratoController/Details/5
         public ActionResult Details(int id)
         {
-            return View(repositorioContrato.ObtenerPorId<Contrato>(id));
+            return View(repositorioContrato.ObtenerPorId_v2(id));
         }
 
         // GET: ContratoController/Create

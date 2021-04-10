@@ -54,14 +54,7 @@
                     $@Html.DisplayFor(modelItem => item.Precio)
                 </td>
                 <td>
-                    @if (item.Disponible == 1)
-                    {
-                        <span>Si</span>
-                    }
-                    else
-                    {
-                        <span>No</span>
-                    }
+                    @(item.Disponible == 1 ? Html.Encode("Si") : Html.Encode("No"))
                 </td>
                 <td>
                     <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
