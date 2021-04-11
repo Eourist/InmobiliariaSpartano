@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace InmobiliariaSpartano.Controllers
 {
+    [Authorize(Policy = "Administrador")]
     public class UsuarioController : Controller
     {
         private readonly IConfiguration configuration;
@@ -28,12 +30,6 @@ namespace InmobiliariaSpartano.Controllers
         public ActionResult Index()
         {
             return View();
-        }
-
-        [Authorize/*(Policy = "Administrador")*/]
-        public ActionResult Prueba()
-        {
-            return RedirectToAction("Index", "Contrato");
         }
 
         [AllowAnonymous]
@@ -86,6 +82,8 @@ namespace InmobiliariaSpartano.Controllers
         }
 
         //[Route("salir", Name = "logout")] que es esto??
+        [AllowAnonymous]
+        [Authorize(Policy = "Empleado")]
         public async Task<ActionResult> Logout()
         {
             await HttpContext.SignOutAsync(
@@ -100,6 +98,7 @@ namespace InmobiliariaSpartano.Controllers
         }
 
         // GET: UsuarioController/Create
+        [AllowAnonymous]
         public ActionResult Create()
         {
             return View();
@@ -107,6 +106,7 @@ namespace InmobiliariaSpartano.Controllers
 
         // POST: UsuarioController/Create
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Usuario e)
         {
@@ -125,7 +125,10 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                string msg = ex.Message;
+                if (ex is SqlException && (ex as SqlException).Number == 2627)
+                    msg = "Ya existe una cuenta asociada a ese Email.";
+                ViewData["Error"] = msg;
                 return View();
             }
         }

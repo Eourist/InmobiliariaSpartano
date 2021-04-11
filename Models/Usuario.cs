@@ -11,7 +11,7 @@ namespace InmobiliariaSpartano.Models
     {
         SuperAdministrador = 1,
         Administrador = 2,
-        Empleado = 3,
+        Empleado = 3
     }
 
     public class Usuario : Entidad

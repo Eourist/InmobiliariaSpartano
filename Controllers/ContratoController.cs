@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaSpartano.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "Empleado")]
     public class ContratoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -131,6 +131,7 @@ namespace InmobiliariaSpartano.Controllers
         }
 
         // GET: ContratoController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             return View(repositorioContrato.ObtenerPorId<Contrato>(id));
@@ -138,6 +139,7 @@ namespace InmobiliariaSpartano.Controllers
 
         // POST: ContratoController/Delete/5
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {

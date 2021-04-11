@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaSpartano.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "Empleado")]
     public class InquilinoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -53,7 +53,10 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                string msg = ex.Message;
+                if (ex is SqlException && (ex as SqlException).Number == 2627)
+                    msg = "Ya existe un inquilino asociado a ese Email.";
+                ViewData["Error"] = msg;
                 return View();
             }
         }
@@ -82,6 +85,7 @@ namespace InmobiliariaSpartano.Controllers
         }
 
         // GET: TestController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             return View(repositorioInquilino.ObtenerPorId<Inquilino>(id));
@@ -89,6 +93,7 @@ namespace InmobiliariaSpartano.Controllers
 
         // POST: TestController/Delete/5
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {

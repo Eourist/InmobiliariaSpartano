@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaSpartano.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "Empleado")]
     public class PagoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -112,6 +112,7 @@ namespace InmobiliariaSpartano.Controllers
         }
 
         // GET: PagoController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id) // POR AHORA NO SE PUEDEN ELIMINAR PAGOS
         {
             return RedirectToAction(nameof(Index)); //
@@ -120,6 +121,7 @@ namespace InmobiliariaSpartano.Controllers
 
         // POST: PagoController/Delete/5
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection) // POR AHORA NO SE PUEDEN ELIMINAR PAGOS
         {
