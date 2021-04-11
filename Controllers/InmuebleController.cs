@@ -1,4 +1,5 @@
 ﻿using InmobiliariaSpartano.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaSpartano.Controllers
 {
+    [Authorize]
     public class InmuebleController : Controller
     {
         private readonly IConfiguration configuration;

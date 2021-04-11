@@ -25,16 +25,25 @@ namespace InmobiliariaSpartano
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            /*services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "",
-                });*/
+                    options.LoginPath = "/Usuario/Login";
+                    options.LogoutPath = "/Usuario/Logout";
+                    options.AccessDeniedPath = "/Home/Index";
+                });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador", "SuperAdministrador"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

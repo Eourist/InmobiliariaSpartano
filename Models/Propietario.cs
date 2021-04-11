@@ -30,7 +30,8 @@ namespace InmobiliariaSpartano.Models
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"), 
-            MaxLength(50, ErrorMessage = "Máximo 50 caracteres")]
+            MaxLength(50, ErrorMessage = "Máximo 50 caracteres"),
+            DataType(DataType.Password)]
         public string Clave { get; set; }
 
         public override string ToString()
