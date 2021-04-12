@@ -36,6 +36,8 @@ namespace InmobiliariaSpartano.Controllers
         // GET: ContratoController/Details/5
         public ActionResult Details(int id)
         {
+            Dictionary<string, int> DatosPago = new RepositorioPago(configuration).ObtenerDatosContrato(id);
+            ViewData["DatosPago"] = DatosPago;
             return View(repositorioContrato.ObtenerPorId_v2(id));
         }
 
@@ -95,7 +97,6 @@ namespace InmobiliariaSpartano.Controllers
         {
             try
             {
-
                 Contrato e = new Contrato()
                 {
                     Id = id,

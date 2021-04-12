@@ -32,38 +32,118 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                #@Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @item.Inmueble.ToString()
-            </td>
-            <td>
-                @item.Inquilino.ToString()
-            </td>
-            <td>
-                @item.FechaDesde.ToShortDateString()
-            </td>
-            <td>
-                @item.FechaHasta.ToShortDateString()
-            </td>
-            <td>
-                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
-                    <i class="fas fa-file-alt"></i>
-                </a>
-                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Delete" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Eliminar">
-                    <i class="fas fa-trash-alt"></i>
-                </a>
-                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Edit" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Editar">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <a asp-route-ContratoId="@item.Id" asp-controller="Pago" asp-action="Index" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Pagos">
-                    <i class="fas fa-money-bill-wave-alt"></i>
-                </a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    #@Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @item.Inmueble.ToString()
+                </td>
+                <td>
+                    @item.Inquilino.ToString()
+                </td>
+                <td>
+                    @item.FechaDesde.ToShortDateString()
+                </td>
+                <td>
+                    @item.FechaHasta.ToShortDateString()
+                </td>
+                <td>
+                    <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
+                        <i class="fas fa-file-alt"></i>
+                    </a>
+                    <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Edit" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <!--
+                    <a onclick="$('#RomperContratoId').val(@item.Id)" href="#modal-romper" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Romper">
+                        <i class="fas fa-calendar-times"></i>
+                    </a>
+                    <a onclick="$('#ExtenderContratoId').val(@item.Id)" href="#modal-extender" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Extender">
+                        <i class="fas fa-calendar-plus"></i>
+                    </a>
+                    <a onclick="$('#CerrarContratoId').val(@item.Id)" href="#modal-cerrar" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Cerrar">
+                        <i class="fas fa-calendar-check"></i>
+                    </a>
+                    -->
+                    <a asp-route-ContratoId="@item.Id" asp-controller="Pago" asp-action="Index" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Pagos">
+                        <i class="fas fa-money-bill-wave-alt"></i>
+                    </a>
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+                    {
+                        <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Delete" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<!-- 
+<div class="modal fade" id="modal-romper" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="w-100 text-center">Romper contrato</h5>
+            </div>
+            <form asp-action="Romper">
+                <div class="modal-body text-center">
+                    <p>¿Desea romper este Contrato? <br /> El inquilino debera pagar una multa como consecuencia</p>
+                    <input type="hidden" name="RomperContratoId" id="RomperContratoId" value="" />
+                    <div class="col-12 text-right p-0">
+                        <a href="#" data-dismiss="modal">Cancelar</a> |
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Confirmar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-extender" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="w-100 text-center">Extender contrato</h5>
+            </div>
+            <form asp-action="Extender">
+                <div class="modal-body text-center">
+                    <p>¿Hasta que fecha desea extender este Contrato?</p>
+                    <div class="form-group">
+                        <input type="date" class="form-co" name="ExtenderContratoFecha" id="ExtenderContratoFecha" value="" />
+                    </div>
+                    <input type="hidden" name="ExtenderContratoId" id="ExtenderContratoId" value="" />
+                    <div class="col-12 text-right p-0">
+                        <a href="#" data-dismiss="modal">Cancelar</a> |
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Confirmar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-cerrar" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="w-100 text-center">Cerrar contrato</h5>
+            </div>
+            <form asp-action="Extender">
+                <div class="modal-body text-center">
+                    <p>¿Desea marcar este contrato como cumplido y cerrarlo?</p>
+                    <input type="hidden" name="CerrarContratoId" id="CerrarContratoId" value="" />
+                    <div class="col-12 text-right p-0">
+                        <a href="#" data-dismiss="modal">Cancelar</a> |
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Confirmar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+-->

@@ -72,5 +72,26 @@ namespace InmobiliariaSpartano.Models
             }
             return res;
         }
+
+        public Dictionary<string, int> ObtenerDatosContrato(int ContratoId)
+        {
+            Dictionary<string, int> res = new Dictionary<string, int>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT COUNT(p.Id) as CantidadPagos, SUM(p.Importe) as ImportePagado FROM Contratos c JOIN Pagos p ON p.ContratoId = c.Id WHERE c.Id = {ContratoId}";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        res.Add("CantidadPagos", (int)reader["CantidadPagos"]);
+                        res.Add("ImportePagado", (int)reader["ImportePagado"]);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
     }
 }

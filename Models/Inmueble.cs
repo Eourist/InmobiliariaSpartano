@@ -38,6 +38,8 @@ namespace InmobiliariaSpartano.Models
 
         public int Disponible { get; set; }
 
+        public int Visible { get; set; }
+
         [Display(Name = "Propietario")]
         public Propietario Dueño { get; set; }
 

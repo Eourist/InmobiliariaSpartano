@@ -76,6 +76,19 @@
                 <span>No</span>
             }
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Visible)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Visible == 1)
+            {
+                <span>Si</span>
+            }
+            else
+            {
+                <span>No</span>
+            }
+        </dd>
     </dl>
 
     <form asp-action="Delete">

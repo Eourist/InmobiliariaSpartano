@@ -3,9 +3,11 @@
 
 // Write your JavaScript code.
 
+$(function () {
+    $('[data-tooltip="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip()
+})
 $(document).ready(function () {
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
+
 });
 

@@ -29,37 +29,36 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                #@Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefono)
-            </td>
-            <td>
-                <a asp-route-id="@item.Id" asp-controller="Inquilino" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
-                    <i class="fas fa-file-alt"></i>
-                </a>
-                <a asp-route-id="@item.Id" asp-controller="Inquilino" asp-action="Delete" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Eliminar">
-                    <i class="fas fa-trash-alt"></i>
-                </a>
-                <a asp-route-id="@item.Id" asp-controller="Inquilino" asp-action="Edit" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Editar">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <!--
-                <a asp-route-id="@item.Id" asp-controller="Inquilino" asp-action="Contratos" class="btn btn-sm btn-outline-primary" title="Contratos">
-                    <i class="fas fa-handshake"></i>
-                </a>
-                -->
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    #@Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                <td>
+                    <a asp-route-id="@item.Id" asp-controller="Inquilino" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
+                        <i class="fas fa-file-alt"></i>
+                    </a>
+                    <a asp-route-id="@item.Id" asp-controller="Inquilino" asp-action="Edit" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+                    {
+                        <a asp-route-id="@item.Id" asp-controller="Inquilino" asp-action="Delete" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

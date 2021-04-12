@@ -50,7 +50,7 @@ namespace InmobiliariaSpartano.Models
                 string sql = $"SELECT ";
                 sql += 
                     "Contratos.Id, Contratos.InmuebleId, Contratos.InquilinoId, Contratos.FechaDesde, Contratos.FechaHasta, " +
-                    "Inmuebles.Id, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Disponible, " +
+                    "Inmuebles.Id, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Disponible, Inmuebles.Visible, " +
                     "Propietarios.Id, Propietarios.Nombre, Propietarios.Apellido, Propietarios.Dni, Propietarios.Telefono, Propietarios.Email, Propietarios.Clave, " +
                     "Inquilinos.Id, Inquilinos.Nombre, Inquilinos.Apellido, Inquilinos.Dni, Inquilinos.Telefono, Inquilinos.Email, Inquilinos.LugarTrabajo, Inquilinos.NombreGarante, Inquilinos.ApellidoGarante, Inquilinos.DniGarante, Inquilinos.TelefonoGarante, Inquilinos.EmailGarante ";
                 // SELECT facil - necesita que RepositorioBase.tabla y .columnas sean publicos...
@@ -100,32 +100,33 @@ namespace InmobiliariaSpartano.Models
                         Precio = reader.GetInt32(10),
                         Ambientes = reader.GetInt32(11),
                         Superficie = reader.GetInt32(12),
-                        Disponible = reader.GetInt32(13)
+                        Disponible = reader.GetInt32(13),
+                        Visible = reader.GetInt32(14)
                     };
                     res.Inmueble.Dueño = new Propietario()
                     {
-                        Id = reader.GetInt32(14),
-                        Nombre = reader.GetString(15),
-                        Apellido = reader.GetString(16),
-                        Dni = reader.GetString(17),
-                        Telefono = reader.GetString(18),
-                        Email = reader.GetString(19),
-                        Clave = reader.GetString(20)
+                        Id = reader.GetInt32(15),
+                        Nombre = reader.GetString(16),
+                        Apellido = reader.GetString(17),
+                        Dni = reader.GetString(18),
+                        Telefono = reader.GetString(19),
+                        Email = reader.GetString(20),
+                        Clave = reader.GetString(21)
                     };
                     res.Inquilino = new Inquilino()
                     {
-                        Id = reader.GetInt32(21),
-                        Nombre = reader.GetString(22),
-                        Apellido = reader.GetString(23),
-                        Dni = reader.GetString(24),
-                        Telefono = reader.GetString(25),
-                        Email = reader.GetString(26),
-                        LugarTrabajo = reader.GetString(27),
-                        NombreGarante = reader.GetString(28),
-                        ApellidoGarante = reader.GetString(29),
-                        DniGarante = reader.GetString(30),
-                        TelefonoGarante = reader.GetString(31),
-                        EmailGarante = reader.GetString(32)
+                        Id = reader.GetInt32(22),
+                        Nombre = reader.GetString(23),
+                        Apellido = reader.GetString(24),
+                        Dni = reader.GetString(25),
+                        Telefono = reader.GetString(26),
+                        Email = reader.GetString(27),
+                        LugarTrabajo = reader.GetString(28),
+                        NombreGarante = reader.GetString(29),
+                        ApellidoGarante = reader.GetString(30),
+                        DniGarante = reader.GetString(31),
+                        TelefonoGarante = reader.GetString(32),
+                        EmailGarante = reader.GetString(33)
                     };
 
                     connection.Close();

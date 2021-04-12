@@ -60,15 +60,71 @@
                     <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
                         <i class="fas fa-file-alt"></i>
                     </a>
-                    <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Delete" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Eliminar">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
                     <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Edit" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
+                    @if (item.Visible == 1)
+                    {
+                        <a onclick="$('#OcultarInmuebleId').val(@item.Id)" href="#modal-ocultar" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Ocultar">
+                            <i class="fas fa-eye-slash"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a onclick="$('#MostrarInmuebleId').val(@item.Id)" href="#modal-mostrar" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Mostrar">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    }
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+                    {
+                        <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Delete" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+<!-- MODAL OCULTAR -->
+<div class="modal fade" id="modal-ocultar" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="w-100 text-center">Ocultar elemento</h5>
+            </div>
+            <form asp-action="Ocultar">
+                <div class="modal-body text-center">
+                    <p>¿Desea ocultar este Inmueble? <br /> Los inmuebles ocultos no pueden ser alquilados</p>
+                    <input type="hidden" name="OcultarInmuebleId" id="OcultarInmuebleId" value="" />
+                    <div class="col-12 text-right p-0">
+                        <a href="#" data-dismiss="modal">Cancelar</a> | 
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Confirmar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MOSTRAR -->
+<div class="modal fade" id="modal-mostrar" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="w-100 text-center">Mostrar elemento</h5>
+            </div>
+            <form asp-action="Mostrar">
+                <div class="modal-body text-center">
+                    <p>¿Desea mostrar este Inmueble? <br /> Pasará a estar visible y se podran crear contratos sobre él</p>
+                    <input type="hidden" name="MostrarInmuebleId" id="MostrarInmuebleId" value="" />
+                    <div class="col-12 text-right p-0">
+                        <a href="#" data-dismiss="modal">Cancelar</a> |
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Confirmar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -33,6 +33,9 @@ namespace InmobiliariaSpartano.Models
         [Display(Name = "Inmueble")]
         public Inmueble Inmueble { get; set; }
 
+        public int TotalMeses => (FechaHasta.Year - FechaDesde.Year) * 12 + FechaHasta.Month - FechaDesde.Month + 1;
+        public int TotalImporte => TotalMeses * Inmueble.Precio;
+
         public override string ToString()
         {
             return $"#{Id} - {Inmueble.Direccion} ({FechaDesde.Month}/{FechaDesde.Year} - {FechaHasta.Month}/{FechaHasta.Year})";

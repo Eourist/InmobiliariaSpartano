@@ -37,6 +37,38 @@ namespace InmobiliariaSpartano.Controllers
             return View(repositorioInmueble.ObtenerPorId<Inmueble>(id));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Ocultar(IFormCollection collection)
+        {
+            try
+            {
+                int id = Convert.ToInt32(collection["OcultarInmuebleId"]);
+                repositorioInmueble.CambiarVisibilidad(id, 0);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                return View("Index", repositorioInmueble.ObtenerTodos<Inmueble>());
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Mostrar(IFormCollection collection)
+        {
+            try
+            {
+                int id = Convert.ToInt32(collection["MostrarInmuebleId"]);
+                repositorioInmueble.CambiarVisibilidad(id, 1);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                return View("Index", repositorioInmueble.ObtenerTodos<Inmueble>());
+            }
+        }
+
         // GET: InmuebleController/Create
         public ActionResult Create()
         {
@@ -60,7 +92,8 @@ namespace InmobiliariaSpartano.Controllers
                     Precio = Convert.ToInt32(collection["Precio"]),
                     Ambientes = Convert.ToInt32(collection["Ambientes"]),
                     Superficie = Convert.ToInt32(collection["Superficie"]),
-                    Disponible = 1
+                    Disponible = 1,
+                    Visible = 1
                 };
 
                 repositorioInmueble.Alta(e);

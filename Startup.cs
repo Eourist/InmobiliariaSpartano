@@ -34,7 +34,7 @@ namespace InmobiliariaSpartano
                 });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador"));
+                options.AddPolicy("Empleado", policy => policy.RequireRole("Empleado", "Administrador", "SuperAdministrador"));
                 options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador", "SuperAdministrador"));
                 options.AddPolicy("SuperAdministrador", policy => policy.RequireRole("SuperAdministrador"));
             });
