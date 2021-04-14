@@ -143,7 +143,7 @@ namespace InmobiliariaSpartano.Models
                     else
                         sql += $"{columnas[i]}, ";
                 }
-                sql += $" FROM {tabla};";
+                sql += $" FROM {tabla} ORDER BY Id DESC;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();

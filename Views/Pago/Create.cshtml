@@ -4,6 +4,7 @@
     ViewData["Title"] = "Crear";
     string error = ViewData["Error"]?.ToString();
     Contrato contrato = ViewData["Contrato"] as Contrato;
+    TempData["TestContratoId"] = contrato.Id;
 }
 
 <h1>Crear</h1>
@@ -22,13 +23,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Fecha" class="control-label"></label>
-                <input asp-for="Fecha" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" />
+                <input asp-for="Fecha" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" disabled/>
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Importe" class="control-label"></label>
-                <small> - El precio establecido en el contrato es de $@contrato.Inmueble.Precio</small>
-                <input asp-for="Importe" class="form-control" />
+                <input asp-for="Importe" type="text" class="form-control" value="$@contrato.Inmueble.Precio" disabled/>
                 <span asp-validation-for="Importe" class="text-danger"></span>
             </div>
             <div class="form-group">

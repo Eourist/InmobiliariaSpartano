@@ -58,14 +58,13 @@ namespace InmobiliariaSpartano.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
+            int ContratoId = (int)TempData["TestContratoId"];
             try
             {
-                Pago e = new Pago()
-                {
-                    ContratoId = Convert.ToInt32(collection["ContratoId"]),
-                    Fecha = DateTime.Parse(collection["Fecha"]),
-                    Importe = Convert.ToInt32(collection["Importe"])
-                };
+                Pago e = new Pago();
+                e.ContratoId = ContratoId;
+                e.Fecha = DateTime.Now;
+                e.Importe = repositorioContrato.ObtenerPorId_v2(e.ContratoId).Inmueble.Precio;
 
                 repositorioPago.Alta(e);
                 return RedirectToAction(nameof(Index), new { ContratoId = e.ContratoId });
@@ -73,7 +72,7 @@ namespace InmobiliariaSpartano.Controllers
             catch (Exception ex)
             {
                 ViewData["Error"] = ex.Message;
-                ViewData["Contrato"] = repositorioContrato.ObtenerPorId<Contrato>(Convert.ToInt32(collection["ContratoId"]));
+                ViewData["Contrato"] = repositorioContrato.ObtenerPorId<Contrato>(ContratoId);
                 return View();
             }
         }

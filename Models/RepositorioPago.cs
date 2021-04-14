@@ -73,12 +73,12 @@ namespace InmobiliariaSpartano.Models
             return res;
         }
 
-        public Dictionary<string, int> ObtenerDatosContrato(int ContratoId)
+        public Dictionary<string, long> ObtenerDatosContrato(int ContratoId)
         {
-            Dictionary<string, int> res = new Dictionary<string, int>();
+            Dictionary<string, long> res = new Dictionary<string, long>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT COUNT(p.Id) as CantidadPagos, SUM(p.Importe) as ImportePagado FROM Contratos c JOIN Pagos p ON p.ContratoId = c.Id WHERE c.Id = {ContratoId}";
+                string sql = $"SELECT COUNT(p.Id) as CantidadPagos, MAX(p.Fecha) as UltimoPago FROM Contratos c JOIN Pagos p ON p.ContratoId = c.Id WHERE c.Id = {ContratoId}";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
@@ -86,7 +86,14 @@ namespace InmobiliariaSpartano.Models
                     while (reader.Read())
                     {
                         res.Add("CantidadPagos", (int)reader["CantidadPagos"]);
-                        res.Add("ImportePagado", (int)reader["ImportePagado"]);
+                        if (res["CantidadPagos"] != 0)
+                        {
+                            res.Add("UltimoPago", DateTime.Parse(reader["UltimoPago"].ToString()).Ticks);
+                        } else
+                        {
+                            res.Add("UltimoPago", 0);
+                        }
+                        
                     }
                     connection.Close();
                 }

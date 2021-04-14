@@ -45,12 +45,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="FechaDesde" class="control-label"></label>
-                <input type="date" asp-for="FechaDesde" class="form-control" />
+                <input type="date" asp-for="FechaDesde" min="@DateTime.Today.ToString("yyyy-MM-dd")" value="@(DateTime.Today.ToString("yyyy-MM-dd"))" class="form-control" />
                 <span asp-validation-for="FechaDesde" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaHasta" class="control-label"></label>
-                <input type="date" asp-for="FechaHasta" class="form-control" />
+                <small> - El día será el mismo que el de inicio</small>
+                <input type="month" asp-for="FechaHasta" min="@((DateTime.Today.AddMonths(1)).ToString("yyyy-MM"))" value="@((DateTime.Today.AddMonths(1)).ToString("yyyy-MM"))" class="form-control" />
                 <span asp-validation-for="FechaHasta" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -17,7 +17,7 @@ namespace InmobiliariaSpartano.Models
             repInmueble = new RepositorioInmueble(configuration);
             repInquilino = new RepositorioInquilino(configuration);
             this.tabla = "Contratos";
-            this.columnas = new string[4] { "InmuebleId", "InquilinoId", "FechaDesde", "FechaHasta" };
+            this.columnas = new string[5] { "InmuebleId", "InquilinoId", "FechaDesde", "FechaHasta", "Estado" };
         }
 
         new public Contrato ObtenerPorId<T>(int id)
@@ -42,35 +42,97 @@ namespace InmobiliariaSpartano.Models
             return lista;
         }
 
+        public List<Contrato> ObtenerTodos_v2()
+        {
+            List<Contrato> res = new List<Contrato>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT ";
+                sql +=
+                    "Contratos.Id conId, Contratos.InmuebleId, Contratos.InquilinoId, Contratos.FechaDesde, Contratos.FechaHasta, Contratos.Estado, " +
+                    "Inmuebles.Id inmId, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Disponible, Inmuebles.Visible, " +
+                    "Propietarios.Id proId, Propietarios.Nombre proNombre, Propietarios.Apellido proApellido, Propietarios.Dni proDni, Propietarios.Telefono proTelefono, Propietarios.Email proEmail, Propietarios.Clave, " +
+                    "Inquilinos.Id inqId, Inquilinos.Nombre inqNombre, Inquilinos.Apellido inqApellido, Inquilinos.Dni inqDni, Inquilinos.Telefono inqTelefono, Inquilinos.Email inqEmail, Inquilinos.LugarTrabajo, Inquilinos.NombreGarante, Inquilinos.ApellidoGarante, Inquilinos.DniGarante, Inquilinos.TelefonoGarante, Inquilinos.EmailGarante, " +
+                    $"(SELECT COUNT(p.Id) as CantidadPagos FROM Contratos c JOIN Pagos p ON p.ContratoId = c.Id WHERE c.Id = Contratos.Id) as CantidadPagos ";
+                sql += $"FROM Contratos ";
+                sql += $"JOIN Inmuebles ON Inmuebles.Id = Contratos.InmuebleId ";
+                sql += $"JOIN Inquilinos ON Inquilinos.Id = Contratos.InquilinoId ";
+                sql += $"JOIN Propietarios ON Propietarios.Id = Inmuebles.PropietarioId ";
+                sql += $"ORDER BY Contratos.Id DESC;";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Contrato item = new Contrato()
+                        {
+                            Id = (int)reader["conId"],
+                            InmuebleId = (int)reader["InmuebleId"],
+                            InquilinoId = (int)reader["InquilinoId"],
+                            FechaDesde = DateTime.Parse(reader["FechaDesde"].ToString()),
+                            FechaHasta = DateTime.Parse(reader["FechaHasta"].ToString()),
+                            CantidadPagos = (int)reader["CantidadPagos"],
+                            Estado = (int)reader["Estado"],
+                        };
+                        item.Inmueble = new Inmueble()
+                        {
+                            Id = (int)reader["inmId"],
+                            PropietarioId = (int)reader["PropietarioId"],
+                            Direccion = reader["Direccion"].ToString(),
+                            Uso = reader["Uso"].ToString(),
+                            Tipo = reader["Tipo"].ToString(),
+                            Precio = (int)reader["Precio"],
+                            Ambientes = (int)reader["Ambientes"],
+                            Superficie = (int)reader["Superficie"],
+                            Disponible = (int)reader["Disponible"],
+                            Visible = (int)reader["Visible"]
+                        };
+                        item.Inmueble.Dueño = new Propietario()
+                        {
+                            Id = (int)reader["proId"],
+                            Nombre = reader["proNombre"].ToString(),
+                            Apellido = reader["proApellido"].ToString(),
+                            Dni = reader["proDni"].ToString(),
+                            Telefono = reader["proTelefono"].ToString(),
+                            Email = reader["proEmail"].ToString(),
+                            Clave = reader["Clave"].ToString()
+                        };
+                        item.Inquilino = new Inquilino()
+                        {
+                            Id = (int)reader["inqId"],
+                            Nombre = reader["inqNombre"].ToString(),
+                            Apellido = reader["inqApellido"].ToString(),
+                            Dni = reader["inqDni"].ToString(),
+                            Telefono = reader["inqTelefono"].ToString(),
+                            Email = reader["inqEmail"].ToString(),
+                            LugarTrabajo = reader["LugarTrabajo"].ToString(),
+                            NombreGarante = reader["NombreGarante"].ToString(),
+                            ApellidoGarante = reader["ApellidoGarante"].ToString(),
+                            DniGarante = reader["DniGarante"].ToString(),
+                            TelefonoGarante = reader["TelefonoGarante"].ToString(),
+                            EmailGarante = reader["EmailGarante"].ToString()
+                        };
+                        res.Add(item);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
         public Contrato ObtenerPorId_v2(int id)
         {
             Contrato res = new Contrato();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT ";
-                sql += 
-                    "Contratos.Id, Contratos.InmuebleId, Contratos.InquilinoId, Contratos.FechaDesde, Contratos.FechaHasta, " +
-                    "Inmuebles.Id, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Disponible, Inmuebles.Visible, " +
-                    "Propietarios.Id, Propietarios.Nombre, Propietarios.Apellido, Propietarios.Dni, Propietarios.Telefono, Propietarios.Email, Propietarios.Clave, " +
-                    "Inquilinos.Id, Inquilinos.Nombre, Inquilinos.Apellido, Inquilinos.Dni, Inquilinos.Telefono, Inquilinos.Email, Inquilinos.LugarTrabajo, Inquilinos.NombreGarante, Inquilinos.ApellidoGarante, Inquilinos.DniGarante, Inquilinos.TelefonoGarante, Inquilinos.EmailGarante ";
-                // SELECT facil - necesita que RepositorioBase.tabla y .columnas sean publicos...
-                /*List<RepositorioBase> tablas = new List<RepositorioBase>();
-                tablas.Add(new RepositorioContrato(configuration));
-                tablas.Add(new RepositorioInmueble(configuration));
-                tablas.Add(new RepositorioPropietario(configuration));
-                tablas.Add(new RepositorioInquilino(configuration));
-
-                foreach (RepositorioBase t in tablas)
-                {
-                    sql += $"{t.tabla}.Id, ";
-                    for (int i = 0; i < t.columnas.Length; i++)
-                    {
-                        if (i == t.columnas.Length - 1 && t == tablas.Last())
-                            sql += $"{t.tabla}.{t.columnas[i]} ";
-                        else
-                            sql += $"{t.tabla}.{t.columnas[i]}, ";
-                    }
-                }*/
+                sql +=
+                    "Contratos.Id conId, Contratos.InmuebleId, Contratos.InquilinoId, Contratos.FechaDesde, Contratos.FechaHasta, Contratos.Estado, " +
+                    "Inmuebles.Id inmId, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Disponible, Inmuebles.Visible, " +
+                    "Propietarios.Id proId, Propietarios.Nombre proNombre, Propietarios.Apellido proApellido, Propietarios.Dni proDni, Propietarios.Telefono proTelefono, Propietarios.Email proEmail, Propietarios.Clave, " +
+                    "Inquilinos.Id inqId, Inquilinos.Nombre inqNombre, Inquilinos.Apellido inqApellido, Inquilinos.Dni inqDni, Inquilinos.Telefono inqTelefono, Inquilinos.Email inqEmail, Inquilinos.LugarTrabajo, Inquilinos.NombreGarante, Inquilinos.ApellidoGarante, Inquilinos.DniGarante, Inquilinos.TelefonoGarante, Inquilinos.EmailGarante, " +
+                    $"(SELECT COUNT(p.Id) as CantidadPagos FROM Contratos c JOIN Pagos p ON p.ContratoId = c.Id WHERE c.Id = {id}) as CantidadPagos ";
                 sql += $"FROM Contratos ";
                 sql += $"JOIN Inmuebles ON Inmuebles.Id = Contratos.InmuebleId ";
                 sql += $"JOIN Inquilinos ON Inquilinos.Id = Contratos.InquilinoId ";
@@ -84,52 +146,71 @@ namespace InmobiliariaSpartano.Models
                     reader.Read();
                     res = new Contrato()
                     {
-                        Id = reader.GetInt32(0),
-                        InmuebleId = reader.GetInt32(1),
-                        InquilinoId = reader.GetInt32(2),
-                        FechaDesde = reader.GetDateTime(3),
-                        FechaHasta = reader.GetDateTime(4)
+                        Id = (int)reader["conId"],
+                        InmuebleId = (int)reader["InmuebleId"],
+                        InquilinoId = (int)reader["InquilinoId"],
+                        FechaDesde = DateTime.Parse(reader["FechaDesde"].ToString()),
+                        FechaHasta = DateTime.Parse(reader["FechaHasta"].ToString()),
+                        CantidadPagos = (int)reader["CantidadPagos"],
+                        Estado = (int)reader["Estado"],
                     };
                     res.Inmueble = new Inmueble()
                     {
-                        Id = reader.GetInt32(5),
-                        PropietarioId = reader.GetInt32(6),
-                        Direccion = reader.GetString(7),
-                        Uso = reader.GetString(8),
-                        Tipo = reader.GetString(9),
-                        Precio = reader.GetInt32(10),
-                        Ambientes = reader.GetInt32(11),
-                        Superficie = reader.GetInt32(12),
-                        Disponible = reader.GetInt32(13),
-                        Visible = reader.GetInt32(14)
+                        Id = (int)reader["inmId"],
+                        PropietarioId = (int)reader["PropietarioId"],
+                        Direccion = reader["Direccion"].ToString(),
+                        Uso = reader["Uso"].ToString(),
+                        Tipo = reader["Tipo"].ToString(),
+                        Precio = (int)reader["Precio"],
+                        Ambientes = (int)reader["Ambientes"],
+                        Superficie = (int)reader["Superficie"],
+                        Disponible = (int)reader["Disponible"],
+                        Visible = (int)reader["Visible"]
                     };
                     res.Inmueble.Dueño = new Propietario()
                     {
-                        Id = reader.GetInt32(15),
-                        Nombre = reader.GetString(16),
-                        Apellido = reader.GetString(17),
-                        Dni = reader.GetString(18),
-                        Telefono = reader.GetString(19),
-                        Email = reader.GetString(20),
-                        Clave = reader.GetString(21)
+                        Id = (int)reader["proId"],
+                        Nombre = reader["proNombre"].ToString(),
+                        Apellido = reader["proApellido"].ToString(),
+                        Dni = reader["proDni"].ToString(),
+                        Telefono = reader["proTelefono"].ToString(),
+                        Email = reader["proEmail"].ToString(),
+                        Clave = reader["Clave"].ToString()
                     };
                     res.Inquilino = new Inquilino()
                     {
-                        Id = reader.GetInt32(22),
-                        Nombre = reader.GetString(23),
-                        Apellido = reader.GetString(24),
-                        Dni = reader.GetString(25),
-                        Telefono = reader.GetString(26),
-                        Email = reader.GetString(27),
-                        LugarTrabajo = reader.GetString(28),
-                        NombreGarante = reader.GetString(29),
-                        ApellidoGarante = reader.GetString(30),
-                        DniGarante = reader.GetString(31),
-                        TelefonoGarante = reader.GetString(32),
-                        EmailGarante = reader.GetString(33)
+                        Id = (int)reader["inqId"],
+                        Nombre = reader["inqNombre"].ToString(),
+                        Apellido = reader["inqApellido"].ToString(),
+                        Dni = reader["inqDni"].ToString(),
+                        Telefono = reader["inqTelefono"].ToString(),
+                        Email = reader["inqEmail"].ToString(),
+                        LugarTrabajo = reader["LugarTrabajo"].ToString(),
+                        NombreGarante = reader["NombreGarante"].ToString(),
+                        ApellidoGarante = reader["ApellidoGarante"].ToString(),
+                        DniGarante = reader["DniGarante"].ToString(),
+                        TelefonoGarante = reader["TelefonoGarante"].ToString(),
+                        EmailGarante = reader["EmailGarante"].ToString()
                     };
 
                     connection.Close();
+                }
+            }
+            return res;
+        }
+
+        public int CambiarEstado(int id, int estado)
+        {
+            int res = -1;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"UPDATE {tabla} SET Estado = {estado} WHERE Id = {id}";
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                    res = 1;
                 }
             }
             return res;
