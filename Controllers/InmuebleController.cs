@@ -50,6 +50,9 @@ namespace InmobiliariaSpartano.Controllers
                 int propietarioId = Convert.ToInt32(collection["BuscarPropietarioId"]);
                 condiciones += propietarioId == 0 ? "" : " AND PropietarioId = " + propietarioId;
 
+                int visibilidad = Convert.ToInt32(collection["BuscarVisibilidad"]);
+                condiciones += visibilidad == -1 ? "" : $" AND Visible = '{visibilidad}'";
+
                 string uso = collection["BuscarUso"].ToString();
                 condiciones += uso == "0" ? "" : $" AND Uso = '{uso}'";
 
@@ -70,11 +73,9 @@ namespace InmobiliariaSpartano.Controllers
                 string fechaHasta = collection["BuscarFechaHasta"].ToString();
                 DateTime hasta = fechaHasta == "" ? DateTime.MaxValue : DateTime.Parse(collection["BuscarFechaHasta"].ToString());
 
-                //condiciones += condiciones == "" ? "" : "AND " + condiciones;
-
                 ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
-
                 var lista = repositorioInmueble.ObtenerPorBusqueda(condiciones, desde, hasta);
+
                 //return Json(new { Datos = lista });
                 return View(nameof(Index), lista);
             } 
@@ -98,6 +99,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
+                ViewData["Error"] = ex.Message;
                 return View("Index", repositorioInmueble.ObtenerTodos<Inmueble>());
             }
         }
@@ -114,6 +116,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
+                ViewData["Error"] = ex.Message;
                 return View("Index", repositorioInmueble.ObtenerTodos<Inmueble>());
             }
         }
@@ -141,7 +144,6 @@ namespace InmobiliariaSpartano.Controllers
                     Precio = Convert.ToInt32(collection["Precio"]),
                     Ambientes = Convert.ToInt32(collection["Ambientes"]),
                     Superficie = Convert.ToInt32(collection["Superficie"]),
-                    Disponible = 1,
                     Visible = 1
                 };
 

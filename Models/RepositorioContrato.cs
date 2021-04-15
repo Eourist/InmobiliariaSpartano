@@ -53,7 +53,7 @@ namespace InmobiliariaSpartano.Models
                 string sql = $"SELECT ";
                 sql +=
                     "Contratos.Id conId, Contratos.InmuebleId, Contratos.InquilinoId, Contratos.FechaDesde, Contratos.FechaHasta, Contratos.Estado, " +
-                    "Inmuebles.Id inmId, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Disponible, Inmuebles.Visible, " +
+                    "Inmuebles.Id inmId, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Visible, " +
                     "Propietarios.Id proId, Propietarios.Nombre proNombre, Propietarios.Apellido proApellido, Propietarios.Dni proDni, Propietarios.Telefono proTelefono, Propietarios.Email proEmail, Propietarios.Clave, " +
                     "Inquilinos.Id inqId, Inquilinos.Nombre inqNombre, Inquilinos.Apellido inqApellido, Inquilinos.Dni inqDni, Inquilinos.Telefono inqTelefono, Inquilinos.Email inqEmail, Inquilinos.LugarTrabajo, Inquilinos.NombreGarante, Inquilinos.ApellidoGarante, Inquilinos.DniGarante, Inquilinos.TelefonoGarante, Inquilinos.EmailGarante, " +
                     $"(SELECT COUNT(p.Id) as CantidadPagos FROM Contratos c JOIN Pagos p ON p.ContratoId = c.Id WHERE c.Id = Contratos.Id) as CantidadPagos ";
@@ -89,7 +89,6 @@ namespace InmobiliariaSpartano.Models
                             Precio = (int)reader["Precio"],
                             Ambientes = (int)reader["Ambientes"],
                             Superficie = (int)reader["Superficie"],
-                            Disponible = (int)reader["Disponible"],
                             Visible = (int)reader["Visible"]
                         };
                         item.Inmueble.Dueño = new Propietario()
@@ -136,7 +135,7 @@ namespace InmobiliariaSpartano.Models
                 string sql = $"SELECT ";
                 sql +=
                     "Contratos.Id conId, Contratos.InmuebleId, Contratos.InquilinoId, Contratos.FechaDesde, Contratos.FechaHasta, Contratos.Estado, " +
-                    "Inmuebles.Id inmId, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Disponible, Inmuebles.Visible, " +
+                    "Inmuebles.Id inmId, Inmuebles.PropietarioId, Inmuebles.Direccion, Inmuebles.Uso, Inmuebles.Tipo, Inmuebles.Precio, Inmuebles.Ambientes, Inmuebles.Superficie, Inmuebles.Visible, " +
                     "Propietarios.Id proId, Propietarios.Nombre proNombre, Propietarios.Apellido proApellido, Propietarios.Dni proDni, Propietarios.Telefono proTelefono, Propietarios.Email proEmail, Propietarios.Clave, " +
                     "Inquilinos.Id inqId, Inquilinos.Nombre inqNombre, Inquilinos.Apellido inqApellido, Inquilinos.Dni inqDni, Inquilinos.Telefono inqTelefono, Inquilinos.Email inqEmail, Inquilinos.LugarTrabajo, Inquilinos.NombreGarante, Inquilinos.ApellidoGarante, Inquilinos.DniGarante, Inquilinos.TelefonoGarante, Inquilinos.EmailGarante, " +
                     $"(SELECT COUNT(p.Id) as CantidadPagos FROM Contratos c JOIN Pagos p ON p.ContratoId = c.Id WHERE c.Id = {id}) as CantidadPagos ";
@@ -171,7 +170,6 @@ namespace InmobiliariaSpartano.Models
                         Precio = (int)reader["Precio"],
                         Ambientes = (int)reader["Ambientes"],
                         Superficie = (int)reader["Superficie"],
-                        Disponible = (int)reader["Disponible"],
                         Visible = (int)reader["Visible"]
                     };
                     res.Inmueble.Dueño = new Propietario()

@@ -15,7 +15,7 @@ namespace InmobiliariaSpartano.Models
         {
             repPropietario = new RepositorioPropietario(configuration);
             this.tabla = "Inmuebles";
-            this.columnas = new string[9] { "PropietarioId", "Direccion", "Uso", "Tipo", "Precio", "Ambientes", "Superficie", "Disponible", "Visible" };
+            this.columnas = new string[8] { "PropietarioId", "Direccion", "Uso", "Tipo", "Precio", "Ambientes", "Superficie", "Visible" };
         }
 
         new public Inmueble ObtenerPorId<T>(int id)
@@ -36,6 +36,37 @@ namespace InmobiliariaSpartano.Models
             }
 
             return lista;
+        }
+
+        public bool Disponible(int id, DateTime desde, DateTime hasta)
+        {
+            bool res = true;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT {tabla}.Id, ";
+                for (int i = 0; i < columnas.Length; i++)
+                {
+                    if (i == columnas.Length - 1)
+                        sql += columnas[i];
+                    else
+                        sql += $"{columnas[i]}, ";
+                }
+                sql += $" FROM {tabla} ";
+                sql += $"LEFT JOIN Contratos c ON c.InmuebleId = {tabla}.Id ";
+                sql += $"WHERE Inmuebles.Id = {id} AND Inmuebles.Visible = 1 AND (c.Id IS NULL OR (c.Estado = 1 AND (c.FechaDesde > '{hasta.ToString("MM-dd-yyyy")}' OR c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}')))";
+                sql += $" ORDER BY Id DESC;";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (!reader.Read())
+                    {
+                        res = false;
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
         }
 
         public List<Inmueble> ObtenerPorBusqueda(string condiciones, DateTime desde, DateTime hasta)
@@ -74,8 +105,7 @@ namespace InmobiliariaSpartano.Models
                         item.Precio = reader.GetInt32(5);
                         item.Ambientes = reader.GetInt32(6);
                         item.Superficie = reader.GetInt32(7);
-                        item.Disponible = reader.GetInt32(8);
-                        item.Visible = reader.GetInt32(9);
+                        item.Visible = reader.GetInt32(8);
                         item.Dueño = repPropietario.ObtenerPorId<Propietario>(item.PropietarioId);
 
                         res.Add(item);
@@ -86,7 +116,7 @@ namespace InmobiliariaSpartano.Models
             return res;
         }
 
-        public List<Inmueble> ObtenerDisponibles()
+        public List<Inmueble> ObtenerVisibles()
         {
             List<Inmueble> res = new List<Inmueble>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -99,7 +129,7 @@ namespace InmobiliariaSpartano.Models
                     else
                         sql += $"{columnas[i]}, ";
                 }
-                sql += $" FROM {tabla} WHERE Disponible = 1 AND Visible = 1 ORDER BY Id DESC;";
+                sql += $" FROM {tabla} WHERE Visible = 1 ORDER BY Id DESC;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
@@ -115,8 +145,7 @@ namespace InmobiliariaSpartano.Models
                         item.Precio         = reader.GetInt32(5);
                         item.Ambientes      = reader.GetInt32(6);
                         item.Superficie     = reader.GetInt32(7);
-                        item.Disponible     = reader.GetInt32(8);
-                        item.Visible        = reader.GetInt32(9);
+                        item.Visible        = reader.GetInt32(8);
                         item.Dueño          = repPropietario.ObtenerPorId<Propietario>(item.PropietarioId);
 
                         res.Add(item);
@@ -156,8 +185,7 @@ namespace InmobiliariaSpartano.Models
                         item.Precio         = reader.GetInt32(5);
                         item.Ambientes      = reader.GetInt32(6);
                         item.Superficie     = reader.GetInt32(7);
-                        item.Disponible     = reader.GetInt32(8);
-                        item.Visible        = reader.GetInt32(9);
+                        item.Visible        = reader.GetInt32(8);
                         item.Dueño          = repPropietario.ObtenerPorId<Propietario>(item.PropietarioId);
 
                         res.Add(item);
@@ -168,25 +196,6 @@ namespace InmobiliariaSpartano.Models
             return res;
         }
 
-        public int CambiarDisponibilidad(int id, int disponibilidad = -1)
-        {
-            int res = -1;
-            if (disponibilidad > 1 || disponibilidad < -1)
-                return res;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                string sql = $"UPDATE {tabla} SET Disponible = IIF({disponibilidad} = -1, IIF(Disponible = 1, 0, 1), {disponibilidad}) WHERE Id = {id}";
-
-                using (var command = new SqlCommand(sql, connection))
-                {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                    res = 1;
-                }
-            }
-            return res;
-        }
 
         public int CambiarVisibilidad(int id, int visibilidad = -1)
         {

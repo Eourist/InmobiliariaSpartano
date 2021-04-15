@@ -12,12 +12,9 @@
     </div>
 }
 <p>
-    <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-plus-square"></i> Crear</a>
-    <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#formBusqueda">
-        <i class="fas fa-filter"></i> Filtrar
-    </button>
+    <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-plus-square"></i> Crear nuevo inmueble</a>
 </p>
-<div class="collapse" id="formBusqueda">
+<div >
     <form asp-action="Buscar">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-row">
@@ -35,14 +32,15 @@
                     </select>
                     <span class="text-danger"></span>
                 </div>
+            </div>
+            <div class="col">
                 <div class="form-group">
-                    <label for="BuscarPrecio">Precio máximo</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
-                        <input type="number" name="BuscarPrecio" id="BuscarPrecio" class="form-control" placeholder="Cualquiera" />
-                    </div>
+                    <label for="BuscarVisibilidad">Visibilidad</label>
+                    <select name="BuscarVisibilidad" id="BuscarVisibilidad" class="form-control">
+                        <option value="-1">Cualquiera</option>
+                        <option value="1">Solo visibles</option>
+                        <option value="0">Solo no visibles</option>
+                    </select>
                     <span class="text-danger"></span>
                 </div>
             </div>
@@ -58,11 +56,6 @@
                     </select>
                     <span class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label for="BuscarAmbientes">Cantidad ambientes mínima</label>
-                    <input type="number" name="BuscarAmbientes" id="BuscarAmbientes" class="form-control" placeholder="Cualquiera" />
-                    <span class="text-danger"></span>
-                </div>
             </div>
             <div class="col">
                 <div class="form-group">
@@ -74,6 +67,22 @@
                     </select>
                     <span class="text-danger"></span>
                 </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-2">
+                <div class="form-group">
+                    <label for="BuscarPrecio">Precio máximo</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" name="BuscarPrecio" id="BuscarPrecio" class="form-control" placeholder="Cualquiera" />
+                    </div>
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-2">
                 <div class="form-group">
                     <label for="BuscarSuperficie">Superficie mínima</label>
                     <div class="input-group">
@@ -85,12 +94,21 @@
                     <span class="text-danger"></span>
                 </div>
             </div>
-            <div class="col">
+            <div class="col-2">
+                <div class="form-group">
+                    <label for="BuscarAmbientes">Ambientes mínimos</label>
+                    <input type="number" name="BuscarAmbientes" id="BuscarAmbientes" class="form-control" placeholder="Cualquiera" />
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-3">
                 <div class="form-group">
                     <label for="BuscarFechaDesde">Fecha Desde</label>
                     <input type="date" name="BuscarFechaDesde" id="BuscarFechaDesde" class="form-control" />
                     <span class="text-danger"></span>
                 </div>
+            </div>
+            <div class="col-3">
                 <div class="form-group">
                     <label for="BuscarFechaHasta">Fecha Hasta</label>
                     <input type="date" name="BuscarFechaHasta" id="BuscarFechaHasta" class="form-control" />
@@ -99,8 +117,8 @@
             </div>
         </div>
         <div class="form-group">
-            <!--<button onclick="buscarInmueble()">asdasd</button>-->
-            <input type="submit" value="Buscar" class="btn btn-primary" />
+            <!--<button onclick="buscarInmueble()">buscar</button>-->
+            <button type="submit" class="btn btn-outline-primary"><i class="fas fa-search"></i> Buscar</button>
         </div>
     </form>
 </div>
@@ -122,16 +140,13 @@
             <th>
                 @Html.DisplayNameFor(model => model.Precio)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Disponible)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr style="@(item.Visible == 1 ? "" : "color: darkgrey")">
                 <td>
                     #@Html.DisplayFor(modelItem => item.Id)
                 </td>
@@ -148,9 +163,6 @@
                     $@Html.DisplayFor(modelItem => item.Precio)
                 </td>
                 <td>
-                    @(item.Disponible == 1 ? Html.Encode("Si") : Html.Encode("No"))
-                </td>
-                <td>
                     <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
                         <i class="fas fa-file-alt"></i>
                     </a>
@@ -159,9 +171,9 @@
                     </a>
                     @if (item.Visible == 1)
                     {
-                        <a onclick="$('#OcultarInmuebleId').val(@item.Id)" href="#modal-ocultar" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Ocultar">
+                        <button onclick="$('#OcultarInmuebleId').val(@item.Id)" data-target="#modal-ocultar" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Ocultar">
                             <i class="fas fa-eye-slash"></i>
-                        </a>
+                        </button>
                     }
                     else
                     {

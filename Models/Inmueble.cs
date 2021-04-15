@@ -36,8 +36,6 @@ namespace InmobiliariaSpartano.Models
             StringLength(8, MinimumLength = 1, ErrorMessage = "Ingrese una superficie válida")]
         public int Superficie { get; set; }
 
-        public int Disponible { get; set; }
-
         public int Visible { get; set; }
 
         [Display(Name = "Propietario")]

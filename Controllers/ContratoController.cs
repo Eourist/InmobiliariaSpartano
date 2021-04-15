@@ -45,7 +45,7 @@ namespace InmobiliariaSpartano.Controllers
         // GET: ContratoController/Create
         public ActionResult Create()
         {
-            ViewData["Inmuebles"] = repositorioInmueble.ObtenerDisponibles();
+            ViewData["Inmuebles"] = repositorioInmueble.ObtenerVisibles();
             ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
             return View();
         }
@@ -83,17 +83,17 @@ namespace InmobiliariaSpartano.Controllers
                 }
 
                 if (e.FechaDesde > e.FechaHasta || (e.FechaDesde.Month == e.FechaHasta.Month && e.FechaDesde.Year == e.FechaHasta.Year))
-                    throw new Exception("La fecha final del contrato no puede ser menor o del mismo mes que la fecha inicial");
+                    throw new Exception("La fecha final del contrato no puede ser menor o del mismo mes que la fecha inicial.");
+                if (!repositorioInmueble.Disponible(e.InmuebleId, e.FechaDesde, e.FechaHasta))
+                    throw new Exception("No se puede crear el contrato porque el inmueble esta ocupado en el periodo ingresado.");
 
                 repositorioContrato.Alta(e);
-                repositorioInmueble.CambiarDisponibilidad(e.InmuebleId);
-
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ViewData["Error"] = ex.Message;
-                ViewData["Inmuebles"] = repositorioInmueble.ObtenerDisponibles();
+                ViewData["Inmuebles"] = repositorioInmueble.ObtenerVisibles();
                 ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
                 return View();
             }
@@ -102,7 +102,7 @@ namespace InmobiliariaSpartano.Controllers
         // GET: ContratoController/Edit/5
         public ActionResult Edit(int id)
         {
-            List<Inmueble> inmuebles = repositorioInmueble.ObtenerDisponibles(); // Mostrar los disponibles + el seleccionado actualmente
+            List<Inmueble> inmuebles = repositorioInmueble.ObtenerVisibles(); // Mostrar los disponibles + el seleccionado actualmente
             Inmueble actual = repositorioInmueble.ObtenerPorId<Inmueble>(repositorioContrato.ObtenerPorId<Contrato>(id).InmuebleId);
             inmuebles.Insert(0, actual);
 
@@ -150,18 +150,11 @@ namespace InmobiliariaSpartano.Controllers
                 Contrato anterior = repositorioContrato.ObtenerPorId<Contrato>(id);
                 repositorioContrato.Editar(e);
 
-                // Si se cambió el Inmueble, actualizar la disponibilidad:
-                if (anterior.InmuebleId != e.InmuebleId)
-                {
-                    repositorioInmueble.CambiarDisponibilidad(anterior.InmuebleId);
-                    repositorioInmueble.CambiarDisponibilidad(e.InmuebleId);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                List<Inmueble> inmuebles = repositorioInmueble.ObtenerDisponibles(); // Mostrar los disponibles + el seleccionado actualmente
+                List<Inmueble> inmuebles = repositorioInmueble.ObtenerVisibles(); // Mostrar los disponibles + el seleccionado actualmente
                 Inmueble actual = repositorioInmueble.ObtenerPorId<Inmueble>(repositorioContrato.ObtenerPorId<Contrato>(id).InmuebleId);
                 inmuebles.Insert(0, actual);
 
@@ -190,7 +183,6 @@ namespace InmobiliariaSpartano.Controllers
                 Contrato e = repositorioContrato.ObtenerPorId<Contrato>(id);
 
                 repositorioContrato.Eliminar(e.Id);
-                repositorioInmueble.CambiarDisponibilidad(e.InmuebleId);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -217,7 +209,6 @@ namespace InmobiliariaSpartano.Controllers
                     throw new Exception("No se puede marcar como terminado porque existen pagos pendientes.");
 
                 repositorioContrato.CambiarEstado(e.Id, 2);
-                repositorioInmueble.CambiarDisponibilidad(e.InmuebleId, 1);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -275,7 +266,6 @@ namespace InmobiliariaSpartano.Controllers
                     throw new Exception("No se puede romper el contrato porque los pagos no estan al día.");
 
                 repositorioContrato.CambiarEstado(e.Id, 4);
-                repositorioInmueble.CambiarDisponibilidad(e.InmuebleId, 1);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
