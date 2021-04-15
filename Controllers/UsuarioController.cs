@@ -29,7 +29,7 @@ namespace InmobiliariaSpartano.Controllers
         // GET: UsuarioController
         public ActionResult Index()
         {
-            return View();
+            return View(repositorioUsuario.ObtenerTodos<Usuario>());
         }
 
         [AllowAnonymous]
@@ -94,7 +94,7 @@ namespace InmobiliariaSpartano.Controllers
         // GET: UsuarioController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            return View(repositorioUsuario.ObtenerPorId<Usuario>(id));
         }
 
         // GET: UsuarioController/Create
@@ -134,44 +134,65 @@ namespace InmobiliariaSpartano.Controllers
         }
 
         // GET: UsuarioController/Edit/5
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Edit(int id)
         {
-            return View();
+            return View(repositorioUsuario.ObtenerPorId<Usuario>(id));
         }
 
         // POST: UsuarioController/Edit/5
         [HttpPost]
+        [Authorize(Policy = "SuperAdministrador")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Usuario e)
         {
             try
             {
+                Usuario usuario = repositorioUsuario.ObtenerPorId<Usuario>(id);
+                if (String.IsNullOrEmpty(e.Clave))
+                    e.Clave = usuario.Clave;
+                else
+                {
+                    e.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: e.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 400,
+                        numBytesRequested: 256 / 8));
+                }
+                e.Avatar = usuario.Avatar;
+                repositorioUsuario.Editar(e);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ViewData["Error"] = ex.Message;
+                return View(repositorioUsuario.ObtenerPorId<Usuario>(id));
             }
         }
 
         // GET: UsuarioController/Delete/5
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Delete(int id)
         {
-            return View();
+            return View(repositorioUsuario.ObtenerPorId<Usuario>(id));
         }
 
         // POST: UsuarioController/Delete/5
         [HttpPost]
+        [Authorize(Policy = "SuperAdministrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
+                repositorioUsuario.Eliminar(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ViewData["Error"] = ex.Message;
+                return View(repositorioUsuario.ObtenerPorId<Usuario>(id));
             }
         }
     }

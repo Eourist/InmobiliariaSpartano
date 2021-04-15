@@ -51,7 +51,7 @@
             <div class="form-group">
                 <label asp-for="FechaHasta" class="control-label"></label>
                 <small> - El día será el mismo que el de inicio</small>
-                <input type="month" asp-for="FechaHasta" min="@((DateTime.Today.AddMonths(1)).ToString("yyyy-MM"))" class="form-control" />
+                <input type="month" asp-for="FechaHasta" class="form-control" />
                 <span asp-validation-for="FechaHasta" class="text-danger"></span>
             </div>
             <div class="form-group">

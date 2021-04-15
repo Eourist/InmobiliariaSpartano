@@ -30,7 +30,7 @@ namespace InmobiliariaSpartano.Controllers
         // GET: ContratoController
         public ActionResult Index()
         {
-            List<Contrato> contratos = repositorioContrato.ObtenerTodos_v2();
+            List<Contrato> contratos = repositorioContrato.ObtenerAbiertos();
             return View(contratos);
         }
 
@@ -208,7 +208,6 @@ namespace InmobiliariaSpartano.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Terminar(IFormCollection collection)
         {
-            // agregar comprobaciones adicionales
             Contrato e = repositorioContrato.ObtenerPorId_v2(Convert.ToInt32(collection["TerminarContratoId"].ToString()));
             try
             {
@@ -218,13 +217,11 @@ namespace InmobiliariaSpartano.Controllers
                     throw new Exception("No se puede marcar como terminado porque existen pagos pendientes.");
 
                 repositorioContrato.CambiarEstado(e.Id, 2);
+                repositorioInmueble.CambiarDisponibilidad(e.InmuebleId, 1);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                //ViewData["Error"] = ex.Message;
-                //return View(nameof(Details), e);
-
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(Details), new { id = e.Id });
             }
@@ -234,7 +231,6 @@ namespace InmobiliariaSpartano.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Renovar(IFormCollection collection)
         {
-            // agregar comprobaciones adicionales
             Contrato anterior = repositorioContrato.ObtenerPorId_v2(Convert.ToInt32(collection["ContratoId"]));
             try
             {
@@ -242,13 +238,15 @@ namespace InmobiliariaSpartano.Controllers
                     throw new Exception("No se puede renovar porque el contrato ya esta " + anterior.NombreEstado + ".");
                 if (anterior.ProximoPagoTexto != "N/A")
                     throw new Exception("No se puede renovar porque existen pagos pendientes.");
+                if (anterior.FechaHasta < DateTime.Today)
+                    throw new Exception("No se puede renovar el contrato porque ya se superó la fecha de finalización.");
 
                 Contrato renovacion = new Contrato()
                 {
                     InquilinoId = anterior.InquilinoId,
                     InmuebleId = anterior.InmuebleId,
-                    FechaDesde = DateTime.Now,
-                    FechaHasta = DateTime.Parse(collection["RenovarContratoFecha"].ToString()),
+                    FechaDesde = anterior.FechaHasta,
+                    FechaHasta = DateTime.Parse(collection["RenovarContratoFecha"].ToString()).AddDays(anterior.FechaHasta.Day - 1),
                     Estado = 1
                 };
 
@@ -259,9 +257,6 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                //ViewData["Error"] = ex.Message;
-                //return View(nameof(Details), anterior);
-
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(Details), new { id = anterior.Id });
             }
@@ -271,7 +266,6 @@ namespace InmobiliariaSpartano.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Romper(IFormCollection collection)
         {
-            // agregar comprobaciones adicionales
             Contrato e = repositorioContrato.ObtenerPorId_v2(Convert.ToInt32(collection["RomperContratoId"]));
             try
             {
@@ -281,14 +275,13 @@ namespace InmobiliariaSpartano.Controllers
                     throw new Exception("No se puede romper el contrato porque los pagos no estan al día.");
 
                 repositorioContrato.CambiarEstado(e.Id, 4);
+                repositorioInmueble.CambiarDisponibilidad(e.InmuebleId, 1);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                //ViewData["Error"] = ex.Message;
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(Details), new { id = e.Id });
-                //return View(nameof(Details), repositorioContrato.ObtenerPorId_v2(e.Id));
             }
         }
     }

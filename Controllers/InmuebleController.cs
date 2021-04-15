@@ -28,6 +28,9 @@ namespace InmobiliariaSpartano.Controllers
         // GET: InmuebleController
         public ActionResult Index()
         {
+            ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
+            ViewData["Error"] = TempData["Error"];
+
             return View(repositorioInmueble.ObtenerTodos<Inmueble>());
         }
 
@@ -35,6 +38,52 @@ namespace InmobiliariaSpartano.Controllers
         public ActionResult Details(int id)
         {
             return View(repositorioInmueble.ObtenerPorId<Inmueble>(id));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Buscar(IFormCollection collection)
+        {
+            try
+            {
+                string condiciones = "";
+                int propietarioId = Convert.ToInt32(collection["BuscarPropietarioId"]);
+                condiciones += propietarioId == 0 ? "" : " AND PropietarioId = " + propietarioId;
+
+                string uso = collection["BuscarUso"].ToString();
+                condiciones += uso == "0" ? "" : $" AND Uso = '{uso}'";
+
+                string tipo = collection["BuscarTipo"].ToString();
+                condiciones += tipo == "0" ? "" : $" AND Tipo = '{tipo}'";
+
+                string precioMaximo = collection["BuscarPrecio"].ToString();
+                condiciones += precioMaximo == "" ? "" : " AND Precio <= " + precioMaximo;
+
+                string ambientes = collection["BuscarAmbientes"].ToString();
+                condiciones += ambientes == "" ? "" : " AND Ambientes >= " + ambientes;
+
+                string superficie = collection["BuscarSuperficie"].ToString();
+                condiciones += superficie == "" ? "" : " AND Superficie >= " + superficie;
+
+                string fechaDesde = collection["BuscarFechaDesde"].ToString();
+                DateTime desde = fechaDesde == "" ? DateTime.MinValue : DateTime.Parse(collection["BuscarFechaDesde"].ToString());
+                string fechaHasta = collection["BuscarFechaHasta"].ToString();
+                DateTime hasta = fechaHasta == "" ? DateTime.MaxValue : DateTime.Parse(collection["BuscarFechaHasta"].ToString());
+
+                //condiciones += condiciones == "" ? "" : "AND " + condiciones;
+
+                ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
+
+                var lista = repositorioInmueble.ObtenerPorBusqueda(condiciones, desde, hasta);
+                //return Json(new { Datos = lista });
+                return View(nameof(Index), lista);
+            } 
+            catch (Exception ex)
+            {
+                //return Json(new { Error = ex.Message });
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost]

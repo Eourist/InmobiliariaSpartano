@@ -42,7 +42,10 @@ namespace InmobiliariaSpartano.Models
             return lista;
         }
 
-        public List<Contrato> ObtenerTodos_v2()
+        /// <summary>
+        /// Obtener todos los contratos actualmente activos/abiertos (estado 1)
+        /// </summary>
+        public List<Contrato> ObtenerAbiertos()
         {
             List<Contrato> res = new List<Contrato>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -58,6 +61,7 @@ namespace InmobiliariaSpartano.Models
                 sql += $"JOIN Inmuebles ON Inmuebles.Id = Contratos.InmuebleId ";
                 sql += $"JOIN Inquilinos ON Inquilinos.Id = Contratos.InquilinoId ";
                 sql += $"JOIN Propietarios ON Propietarios.Id = Inmuebles.PropietarioId ";
+                sql += $"WHERE Contratos.Estado = 1 ";
                 sql += $"ORDER BY Contratos.Id DESC;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -121,6 +125,9 @@ namespace InmobiliariaSpartano.Models
             return res;
         }
 
+        /// <summary>
+        /// Obtener contrato por Id - sin importar en que estado esté
+        /// </summary>
         public Contrato ObtenerPorId_v2(int id)
         {
             Contrato res = new Contrato();

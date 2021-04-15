@@ -12,7 +12,7 @@ namespace InmobiliariaSpartano.Models
         public RepositorioUsuario(IConfiguration config) : base(config)
         {
             this.tabla = "Usuarios";
-            this.columnas = new string[6] { "Nombre", "Apellido", "Avatar", "Email", "Clave", "Rol" };
+            this.columnas = new string[5] { "Nombre", "Apellido", "Email", "Clave", "Rol" };
         }
 
         public Usuario ObtenerPorEmail(string email)

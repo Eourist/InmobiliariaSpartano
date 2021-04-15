@@ -38,6 +38,54 @@ namespace InmobiliariaSpartano.Models
             return lista;
         }
 
+        public List<Inmueble> ObtenerPorBusqueda(string condiciones, DateTime desde, DateTime hasta)
+        {
+            // comprobar que no existan contratos con este inmueble en el rango de fechas desde-hasta
+            List<Inmueble> res = new List<Inmueble>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT {tabla}.Id, ";
+                for (int i = 0; i < columnas.Length; i++)
+                {
+                    if (i == columnas.Length - 1)
+                        sql += columnas[i];
+                    else
+                        sql += $"{columnas[i]}, ";
+                }
+                sql += $" FROM {tabla} ";
+                sql += $"LEFT JOIN Contratos c ON c.InmuebleId = {tabla}.Id ";
+                if (desde != DateTime.MinValue || hasta != DateTime.MaxValue)
+                    sql += $"WHERE (c.Id IS NULL OR c.Estado == 1 AND (c.FechaDesde > '{hasta.ToString("MM-dd-yyyy")}' OR c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}')) {condiciones} ";
+                else
+                    sql += $"WHERE {tabla}.Id IS NOT NULL {condiciones}";
+                sql += $" ORDER BY Id DESC;";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Inmueble item = new Inmueble();
+                        item.Id = reader.GetInt32(0);
+                        item.PropietarioId = reader.GetInt32(1);
+                        item.Direccion = reader.GetString(2);
+                        item.Uso = reader.GetString(3);
+                        item.Tipo = reader.GetString(4);
+                        item.Precio = reader.GetInt32(5);
+                        item.Ambientes = reader.GetInt32(6);
+                        item.Superficie = reader.GetInt32(7);
+                        item.Disponible = reader.GetInt32(8);
+                        item.Visible = reader.GetInt32(9);
+                        item.Dueño = repPropietario.ObtenerPorId<Propietario>(item.PropietarioId);
+
+                        res.Add(item);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
         public List<Inmueble> ObtenerDisponibles()
         {
             List<Inmueble> res = new List<Inmueble>();
@@ -51,7 +99,7 @@ namespace InmobiliariaSpartano.Models
                     else
                         sql += $"{columnas[i]}, ";
                 }
-                sql += $" FROM {tabla} WHERE Disponible = 1 AND Visible = 1;";
+                sql += $" FROM {tabla} WHERE Disponible = 1 AND Visible = 1 ORDER BY Id DESC;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();

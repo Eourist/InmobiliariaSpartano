@@ -97,6 +97,7 @@ else
     <a asp-action="Index">Volver</a>
 </div>
 
+<!-- MODAL RENOVAR CONTRATO -->
 <div class="modal fade" id="modal-renovar" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -107,15 +108,20 @@ else
                 <div class="modal-body">
                     <p class="text-center">¿Hasta que fecha desea renovar este Contrato?</p>
                     <div class="form-group">
-                        <input type="date" class="form-control" name="RenovarContratoFecha" id="RenovarContratoFecha" value="@(Model.FechaHasta.AddMonths(1).ToString("yyyy-MM-dd"))" min="@(Model.FechaHasta.AddMonths(1).ToString("yyyy-MM-dd"))" />
+                        <input type="month" class="form-control" name="RenovarContratoFecha" id="RenovarContratoFecha" value="@(Model.FechaHasta.AddMonths(1).ToString("yyyy-MM"))" min="@(Model.FechaHasta.AddMonths(1).ToString("yyyy-MM"))" />
+                        <small>*El día será el mismo que el de finalización del contrato a renovar.</small>
                     </div>
                     <p>Solo realize esta accion si:</p>
                     <ul>
                         <li>Todos los pagos fueron realizados.</li>
+                        <li>Todavía no se alcanzo la fecha de finalización del contrato.</li>
                         <li>Ambos participantes estan de acuerdo con renovar el contrato.</li>
                     </ul>
-                    <p>Al renovar el contrato, este se marcará como cumplido y se creara uno nuevo en su lugar con los mismos datos excepto las fechas de inicio y finalización.</p>
-                    <small>Si se desea cambiar el importe mensual, editar el inmueble.</small>
+                    <p>
+                        Al renovar el contrato, este se marcará como cumplido y se creara uno nuevo en su lugar con los mismos datos excepto
+                        las fechas de inicio y finalización.
+                    </p>
+                    <small>*Si se desea cambiar el importe del contrato, corresponde editar el inmueble antes de renovar.</small>
                     <input type="hidden" name="ContratoId" id="ContratoId" value="@Model.Id" />
                     <hr />
                     <div class="col-12 text-right p-0 mt-1">
@@ -128,6 +134,7 @@ else
     </div>
 </div>
 
+<!-- MODAL ROMPER CONTRATO -->
 <div class="modal fade" id="modal-romper" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -160,6 +167,7 @@ else
     </div>
 </div>
 
+<!-- MODAL TERMINAR/CERRAR CONTRATO -->
 <div class="modal fade" id="modal-terminar" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
