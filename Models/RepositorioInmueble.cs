@@ -44,17 +44,12 @@ namespace InmobiliariaSpartano.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT {tabla}.Id, ";
-                for (int i = 0; i < columnas.Length; i++)
-                {
-                    if (i == columnas.Length - 1)
-                        sql += columnas[i];
-                    else
-                        sql += $"{columnas[i]}, ";
-                }
                 sql += $" FROM {tabla} ";
                 sql += $"LEFT JOIN Contratos c ON c.InmuebleId = {tabla}.Id ";
                 sql += $"WHERE Inmuebles.Id = {id} AND Inmuebles.Visible = 1 AND (c.Id IS NULL OR (c.Estado = 1 AND (c.FechaDesde > '{hasta.ToString("MM-dd-yyyy")}' OR c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}')))";
                 sql += $" ORDER BY Id DESC;";
+                // Devuelve el inmueble si no tiene contratos o si tiene contratos pero estos se encuentran fuera del rango
+                // Si no devuelve nada quiere decir que existe un contrato dentro del rango, por lo tanto no esta disponible
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
@@ -85,11 +80,15 @@ namespace InmobiliariaSpartano.Models
                 }
                 sql += $" FROM {tabla} ";
                 sql += $"LEFT JOIN Contratos c ON c.InmuebleId = {tabla}.Id ";
-                if (desde != DateTime.MinValue || hasta != DateTime.MaxValue)
-                    sql += $"WHERE (c.Id IS NULL OR c.Estado == 1 AND (c.FechaDesde > '{hasta.ToString("MM-dd-yyyy")}' OR c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}')) {condiciones} ";
+                // Para ver si existen contratos del inmueble dentro del rango de fechas, primero revisar si el inmueble tiene contratos (c.Id IS NULL)
+                // Si tiene, primero asegurarse que esos contratos esten activos. Solo entonces comprobar el contrato esta dentro del rango ingresado.
+                // (c.FechaDesde > hasta) comprueba si el contrato empieza despues del fin del rango - (c.FechaHasta < desde) si termina antes del que empieze el rango
+                if (desde != DateTime.MinValue || hasta != DateTime.MaxValue) 
+                    sql += $"WHERE (c.Id IS NULL OR c.Estado = 1 AND (c.FechaDesde > '{hasta.ToString("MM-dd-yyyy")}' OR c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}')) {condiciones} ";
                 else
                     sql += $"WHERE {tabla}.Id IS NOT NULL {condiciones}";
                 sql += $" ORDER BY Id DESC;";
+                // Devuelve todos los inmuebles segun los parametros de busqueda {condiciones} y si no tiene contratos dentro del rango de fechas desde-hasta
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();

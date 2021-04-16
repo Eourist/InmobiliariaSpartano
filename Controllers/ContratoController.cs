@@ -30,6 +30,8 @@ namespace InmobiliariaSpartano.Controllers
         // GET: ContratoController
         public ActionResult Index()
         {
+            ViewData["Inmuebles"] = repositorioInmueble.ObtenerVisibles();
+            ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
             List<Contrato> contratos = repositorioContrato.ObtenerAbiertos();
             return View(contratos);
         }
@@ -40,6 +42,49 @@ namespace InmobiliariaSpartano.Controllers
             ViewData["Error"] = TempData["Error"];
             Contrato c = repositorioContrato.ObtenerPorId_v2(id);
             return View(c);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Buscar(IFormCollection collection)
+        {
+            try
+            {
+                string condiciones = "";
+                int inmuebleId = Convert.ToInt32(collection["BuscarInmuebleId"]);
+                condiciones += inmuebleId == 0 ? "" : " AND InmuebleId = " + inmuebleId;
+
+                int inquilinoId = Convert.ToInt32(collection["BuscarInquilinoId"]);
+                condiciones += inquilinoId == 0 ? "" : " AND InquilinoId = " + inquilinoId;
+
+                int estado = Convert.ToInt32(collection["BuscarEstado"]);
+                condiciones += estado == 0 ? "" : $" AND Estado = '{estado}'";
+
+                string fechaDesde = collection["BuscarFechaDesde"].ToString();
+                string fechaHasta = collection["BuscarFechaHasta"].ToString();
+
+                DateTime desde = fechaDesde == "" ? DateTime.MinValue : DateTime.Parse(collection["BuscarFechaDesde"].ToString());
+                DateTime hasta = fechaHasta == "" ? DateTime.MaxValue : DateTime.Parse(collection["BuscarFechaHasta"].ToString());
+
+                // Si solo se llena uno de los inputs de fecha, se utiliza ese día como minimo y maximo
+                if (desde != DateTime.MinValue && hasta == DateTime.MaxValue)
+                    hasta = desde;
+                if (hasta != DateTime.MaxValue && desde == DateTime.MinValue)
+                    desde = hasta;
+                
+                ViewData["Inmuebles"] = repositorioInmueble.ObtenerVisibles();
+                ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
+                var lista = repositorioContrato.ObtenerPorBusqueda(condiciones, desde, hasta);
+
+                //return Json(new { Datos = lista });
+                return View(nameof(Index), lista);
+            }
+            catch (Exception ex)
+            {
+                //return Json(new { Error = ex.Message });
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: ContratoController/Create

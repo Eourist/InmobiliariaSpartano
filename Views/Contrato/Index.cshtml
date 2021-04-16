@@ -5,11 +5,86 @@
 }
 
 <h1>Contratos</h1>
-
+@if (!String.IsNullOrEmpty((string)ViewData["Error"]))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
+}
 <p>
-    <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-plus-square"></i> Crear</a>
-    <a asp-action="" class="btn btn-outline-primary disabled"><i class="fas fa-filter"></i> Filtrar</a>
+    <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-plus-square"></i> Nuevo contrato</a>
 </p>
+<form asp-action="Buscar">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-row">
+        <div class="col">
+            <div class="form-group">
+                <label for="BuscarInmuebleId">Inmueble</label>
+                <select name="BuscarInmuebleId" id="BuscarInmuebleId" class="form-control">
+                    <option value="0">Cualquiera</option>
+                    @foreach (var inmueble in ViewData["Inmuebles"] as List<Inmueble>)
+                    {
+                        <option value="@inmueble.Id">
+                            @inmueble.ToString()
+                        </option>
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label for="BuscarInquilinoId">Inquilino</label>
+                <select name="BuscarInquilinoId" id="BuscarInquilinoId" class="form-control">
+                    <option value="0">Cualquiera</option>
+                    @foreach (var inquilino in ViewData["Inquilinos"] as List<Inquilino>)
+                    {
+                        <option value="@inquilino.Id">
+                            @inquilino.ToString()
+                        </option>
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group">
+                <label for="BuscarEstado">Estado</label>
+                <select name="BuscarEstado" id="BuscarEstado" class="form-control">
+                    <option value="0">Cualquiera</option>
+                    @foreach (KeyValuePair<int, string> kvp in Contrato.ObtenerEstados())
+                    {
+                        <option value="@kvp.Key">
+                            Solo contratos @(kvp.Value)s
+                        </option>
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <div class="form-group mb-0">
+                <label for="BuscarFechaDesde">Fecha Desde</label>
+                <input type="date" name="BuscarFechaDesde" id="BuscarFechaDesde" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group mb-0">
+                <label for="BuscarFechaHasta">Fecha Hasta</label>
+                <input type="date" name="BuscarFechaHasta" id="BuscarFechaHasta" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <small>Se mostraran todos los contratos que se encuentren vigentes dentro del rango de fechas ingresado (por defecto todos)</small>
+    <div class="form-group mt-1">
+        <!--<button onclick="buscarInmueble()">buscar</button>-->
+        <button type="submit" class="btn btn-outline-primary"><i class="fas fa-search"></i> Buscar</button>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -37,43 +112,43 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                #@Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @item.Inmueble.ToString()
-            </td>
-            <td>
-                @item.Inquilino.ToString()
-            </td>
-            <td>
-                @item.FechaDesde.ToShortDateString() - @item.FechaHasta.ToShortDateString()
-            </td>
-            <td>
-                @item.NombreEstado
-            </td>
-            <td>
-                @item.EstadoPagos
-            </td>
-            <td>
-                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
-                    <i class="fas fa-file-alt"></i>
-                </a>
-                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Edit" class="btn btn-sm btn-outline-primary @Html.Encode(item.Estado > 1 ? "disabled" : "")" data-toggle="tooltip" data-placement="top" title="Editar">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <a asp-route-ContratoId="@item.Id" asp-controller="Pago" asp-action="Index" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Pagos">
-                    <i class="fas fa-money-bill-wave-alt"></i>
-                </a>
-                @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
-                {
-                    <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Delete" class="btn btn-sm btn-outline-primary @Html.Encode(item.Estado > 1 ? "disabled" : "")" data-toggle="tooltip" data-placement="top" title="Eliminar">
-                        <i class="fas fa-trash-alt"></i>
+            <tr>
+                <td>
+                    #@Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @item.Inmueble.ToString()
+                </td>
+                <td>
+                    @item.Inquilino.ToString()
+                </td>
+                <td>
+                    @item.FechaDesde.ToShortDateString() - @item.FechaHasta.ToShortDateString()
+                </td>
+                <td>
+                    @item.NombreEstado
+                </td>
+                <td>
+                    @item.EstadoPagos
+                </td>
+                <td>
+                    <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
+                        <i class="fas fa-file-alt"></i>
                     </a>
-                }
-            </td>
-        </tr>
+                    <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Edit" class="btn btn-sm btn-outline-primary @Html.Encode(item.Estado > 1 ? "disabled" : "")" data-toggle="tooltip" data-placement="top" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a asp-route-ContratoId="@item.Id" asp-controller="Pago" asp-action="Index" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Pagos">
+                        <i class="fas fa-money-bill-wave-alt"></i>
+                    </a>
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+                    {
+                        <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Delete" class="btn btn-sm btn-outline-primary @Html.Encode(item.Estado > 1 ? "disabled" : "")" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
         }
     </tbody>
 </table>

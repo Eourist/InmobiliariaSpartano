@@ -50,6 +50,16 @@ namespace InmobiliariaSpartano.Models
         public string EstadoPagos => Estado == 1 && ProximoPago < FechaHasta ? (ProximoPago > DateTime.Now ? "Al día" : (ProximoPago.Month == DateTime.Now.Month ? "Pendiente" : "Atrasado")) : "Finalizados";
         public string ResumenPagos => $"{CantidadPagos}/{TotalMeses} mes{(TotalMeses > 1 ? "es" : "")} pagado{(TotalMeses > 1 ? "s" : "")}";
         public bool MitadContratoCumplida => CantidadPagos > (TotalMeses / 2);
+        public static IDictionary<int, string> ObtenerEstados()
+        {
+            SortedDictionary<int, string> estados = new SortedDictionary<int, string>();
+            Type tipoEnumEstado = typeof(Estados);
+            foreach (var valor in Enum.GetValues(tipoEnumEstado))
+            {
+                estados.Add((int)valor, Enum.GetName(tipoEnumEstado, valor));
+            }
+            return estados;
+        }
 
         public override string ToString()
         {
