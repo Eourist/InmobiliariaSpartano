@@ -4,7 +4,6 @@
     ViewData["Title"] = "Detalles";
 }
 
-<h1>Detalles</h1>
 @if (Model.Estado == 1)
 {
     <div class="mb-3">
@@ -146,10 +145,10 @@ else
                     <h5 class="text-center">¿Desea romper este contrato?</h5>
                     <p>El inquilino debera pagar una multa con las siguientes pautas:</p>
                     <ul>
-                        <li>Para poder romper el contrato los pagos deben estar al día.</li>
                         <li>El valor de la multa es proporcional al precio mensual acordado en el contrato.</li>
                         <li>Si se pagó mas de la mitad del contrato, se cobra un mes de multa.</li>
                         <li>Si no se pagó mas de la mitad, se cobran dos meses de multa.</li>
+                        <li>Para poder romper el contrato los pagos deben estar al día.</li>
                         <li>Solo el inquilino puede decidir romper el contrato.</li>
                     </ul>
                     <h6>Estado del contrato actual: @Model.ResumenPagos</h6>

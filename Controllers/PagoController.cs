@@ -34,15 +34,6 @@ namespace InmobiliariaSpartano.Controllers
             return View(repositorioPago.ObtenerPorContrato(ContratoId));
         }
 
-        // GET: PagoController/Details/5
-        public ActionResult Details(int id)
-        {
-            if (id == 0)
-                return RedirectToAction("Index", "Home");
-
-            return View(repositorioPago.ObtenerPorId<Pago>(id));
-        }
-
         // GET: PagoController/Create
         public ActionResult Create(int ContratoId)
         {
@@ -74,66 +65,6 @@ namespace InmobiliariaSpartano.Controllers
                 ViewData["Error"] = ex.Message;
                 ViewData["Contrato"] = repositorioContrato.ObtenerPorId<Contrato>(ContratoId);
                 return View();
-            }
-        }
-
-        // GET: PagoController/Edit/5
-        public ActionResult Edit(int id) // POR AHORA NO SE PUEDEN EDITAR PAGOS
-        {
-            return RedirectToAction(nameof(Index)); //
-            ViewData["Contratos"] = repositorioContrato.ObtenerTodos<Contrato>();
-            return View(repositorioPago.ObtenerPorId<Pago>(id));
-        }
-
-        // POST: PagoController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection) // POR AHORA NO SE PUEDEN EDITAR PAGOS
-        {
-            return RedirectToAction(nameof(Index)); //
-            try
-            {
-                Pago e = new Pago()
-                {
-                    Id = id,
-                    ContratoId = Convert.ToInt32(collection["ContratoId"]),
-                    Fecha = DateTime.Parse(collection["Fecha"])
-                };
-                repositorioPago.Editar(e);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ViewData["Error"] = ex.Message;
-                ViewData["Contratos"] = repositorioContrato.ObtenerTodos<Contrato>();
-                return View(repositorioPago.ObtenerPorId<Pago>(id));
-            }
-        }
-
-        // GET: PagoController/Delete/5
-        [Authorize(Policy = "Administrador")]
-        public ActionResult Delete(int id) // POR AHORA NO SE PUEDEN ELIMINAR PAGOS
-        {
-            return RedirectToAction(nameof(Index)); //
-            return View(repositorioPago.ObtenerPorId<Pago>(id));
-        }
-
-        // POST: PagoController/Delete/5
-        [HttpPost]
-        [Authorize(Policy = "Administrador")]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection) // POR AHORA NO SE PUEDEN ELIMINAR PAGOS
-        {
-            return RedirectToAction(nameof(Index)); //
-            try
-            {
-                repositorioPago.Eliminar(id);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ViewData["Error"] = ex.Message;
-                return View(repositorioPago.ObtenerPorId<Pago>(id));
             }
         }
     }

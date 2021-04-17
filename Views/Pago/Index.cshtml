@@ -7,7 +7,10 @@
 <h1>Pagos</h1>
 
 <p>
-    <a asp-action="Create" asp-route-ContratoId="@ViewData["ContratoId"]" class="btn btn-outline-primary"><i class="fas fa-cash-register"></i> Registrar pago</a> |
+    @if (!Model.Any() || Model.First().Contrato.EstadoPagos != "Finalizados")
+    {
+        <a asp-action="Create" asp-route-ContratoId="@ViewData["ContratoId"]" class="btn btn-outline-primary"><i class="fas fa-cash-register"></i> Registrar pago</a> <span>|</span>
+    }
     <a asp-controller="Contrato" asp-action="Details" asp-route-id="@ViewData["ContratoId"]">Volver</a>
 </p>
 <table class="table">
@@ -30,20 +33,20 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                #@Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @item.Contrato.ToString()
-            </td>
-            <td>
-                @item.Fecha.ToShortDateString()
-            </td>
-            <td>
-                $@Html.DisplayFor(modelItem => item.Importe)
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    #@Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @item.Contrato.ToString()
+                </td>
+                <td>
+                    @item.Fecha.ToShortDateString()
+                </td>
+                <td>
+                    $@Html.DisplayFor(modelItem => item.Importe)
+                </td>
+            </tr>
         }
     </tbody>
 </table>

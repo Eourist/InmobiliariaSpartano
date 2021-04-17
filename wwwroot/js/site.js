@@ -23,14 +23,20 @@ $(document).ready(function () {
         var mh = dateHasta.getMonth() + 1;
         var yearHasta = dateHasta.getFullYear();
 
+        if (month == 13) {
+            month = "01";
+            year = year + 1;
+        }
+
+        $('#FechaHasta').attr({
+            "min": [year, month].join('-')
+        });
+
         if (year > yearHasta || (year == yearHasta && m >= mh)) {
             if (month == 13) {
                 month = "01"; year = year + 1;
             }
             $('#FechaHasta').val([year, month].join('-'));
-            $('#FechaHasta').attr({
-                "min": [year, month].join('-')
-            });
         }
     });
 });

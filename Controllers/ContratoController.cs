@@ -28,11 +28,18 @@ namespace InmobiliariaSpartano.Controllers
         }
 
         // GET: ContratoController
-        public ActionResult Index()
+        public ActionResult Index(int InmuebleId = 0, int InquilinoId = 0)
         {
             ViewData["Inmuebles"] = repositorioInmueble.ObtenerVisibles();
             ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
-            List<Contrato> contratos = repositorioContrato.ObtenerAbiertos();
+
+            List<Contrato> contratos;
+            if (InmuebleId != 0)
+                contratos = repositorioContrato.ObtenerPorInmueble(InmuebleId);
+            else if (InquilinoId != 0)
+                contratos = repositorioContrato.ObtenerPorInquilino(InquilinoId);
+            else
+                contratos = repositorioContrato.ObtenerTodos();
             return View(contratos);
         }
 
@@ -67,10 +74,10 @@ namespace InmobiliariaSpartano.Controllers
                 DateTime hasta = fechaHasta == "" ? DateTime.MaxValue : DateTime.Parse(collection["BuscarFechaHasta"].ToString());
 
                 // Si solo se llena uno de los inputs de fecha, se utiliza ese día como minimo y maximo
-                if (desde != DateTime.MinValue && hasta == DateTime.MaxValue)
+                /*if (desde != DateTime.MinValue && hasta == DateTime.MaxValue)
                     hasta = desde;
                 if (hasta != DateTime.MaxValue && desde == DateTime.MinValue)
-                    desde = hasta;
+                    desde = hasta;*/
                 
                 ViewData["Inmuebles"] = repositorioInmueble.ObtenerVisibles();
                 ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
@@ -192,7 +199,15 @@ namespace InmobiliariaSpartano.Controllers
                 if (e.FechaDesde > e.FechaHasta || e.FechaDesde.Month == e.FechaHasta.Month)
                     throw new Exception("La fecha final del contrato no puede ser menor o del mismo mes que la fecha inicial");
 
-                Contrato anterior = repositorioContrato.ObtenerPorId<Contrato>(id);
+                // Cambiar el estado del contrato temporalmente para que la comprobación de disponibilidad por fechas no lo tome en cuenta
+                repositorioContrato.CambiarEstado(e.Id, 0); // MEJORAR 
+                if (!repositorioInmueble.Disponible(e.InmuebleId, e.FechaDesde, e.FechaHasta))
+                {
+                    repositorioContrato.CambiarEstado(e.Id, 1);
+                    throw new Exception("El inmueble esta ocupado por otro contrato en el periodo de fechas ingresado.");
+                } else
+                    repositorioContrato.CambiarEstado(e.Id, 1);
+
                 repositorioContrato.Editar(e);
 
                 return RedirectToAction(nameof(Index));
@@ -277,12 +292,39 @@ namespace InmobiliariaSpartano.Controllers
                 if (anterior.FechaHasta < DateTime.Today)
                     throw new Exception("No se puede renovar el contrato porque ya se superó la fecha de finalización.");
 
+                DateTime fechaRenovacion = DateTime.Parse(collection["RenovarContratoFecha"].ToString()).AddDays(anterior.FechaHasta.Day - 1);
+
+                // Corregir fechas si el contrato empieza en los ultimos días del mes y termina en uno de los meses de pocos días
+                if (anterior.FechaHasta.Day > 28)
+                {
+                    switch (fechaRenovacion.Month)
+                    {
+                        case 3: // Meses siguientes a los meses deformes- porque el AddDays de arriba^^ los ignora y rompe el calculo de Contrato.TotalMeses
+                            fechaRenovacion = new DateTime(fechaRenovacion.Year, 2, DateTime.IsLeapYear(fechaRenovacion.Year) ? 29 : 28);
+                            break;
+                        case 5: case 7: case 10: case 12:
+                            if (anterior.FechaHasta.Day > 30)
+                                fechaRenovacion = new DateTime(fechaRenovacion.Year, fechaRenovacion.Month - 1, 30);
+                            break;
+                    }
+                }
+
+                // Cambiar el estado del contrato temporalmente para que la comprobación de disponibilidad por fechas no lo tome en cuenta
+                repositorioContrato.CambiarEstado(anterior.Id, 0); // MEJORAR 
+                if (!repositorioInmueble.Disponible(anterior.InmuebleId, anterior.FechaHasta, fechaRenovacion))
+                {
+                    repositorioContrato.CambiarEstado(anterior.Id, 1);
+                    throw new Exception("No se puede renovar porque el inmueble está ocupado por otro contrato en el periodo de fechas ingresado.");
+                }
+                else
+                    repositorioContrato.CambiarEstado(anterior.Id, 1);
+
                 Contrato renovacion = new Contrato()
                 {
                     InquilinoId = anterior.InquilinoId,
                     InmuebleId = anterior.InmuebleId,
                     FechaDesde = anterior.FechaHasta,
-                    FechaHasta = DateTime.Parse(collection["RenovarContratoFecha"].ToString()).AddDays(anterior.FechaHasta.Day - 1),
+                    FechaHasta = fechaRenovacion,
                     Estado = 1
                 };
 

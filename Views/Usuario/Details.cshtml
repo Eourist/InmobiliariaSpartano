@@ -4,7 +4,7 @@
     ViewData["Title"] = "Detalles";
 }
 
-<h1>Detalles</h1>
+<h1>Usuario</h1>
 @if (!String.IsNullOrEmpty((string)ViewData["Error"]))
 {
     <div class="alert alert-danger" role="alert">
@@ -12,7 +12,6 @@
     </div>
 }
 <div>
-    <h4>Usuario</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -51,6 +50,6 @@
     @if (User.IsInRole("SuperAdministrador"))
     {
         @Html.ActionLink("Edit", "Editar", new { id = Model.Id }) <span>|</span>
-    }   
+    }
     <a asp-action="Index">Volver</a>
 </div>
