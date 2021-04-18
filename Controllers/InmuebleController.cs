@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -43,14 +44,50 @@ namespace InmobiliariaSpartano.Controllers
 
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult Buscar2(int id)
+        public ActionResult Buscar(string data)
         {
             try
             {
-                //int propietarioId = Convert.ToInt32(collection["BuscarPropietarioId"]);
-                var lista = repositorioInmueble.ObtenerPorPropietario(id);
+                var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
 
-                return Json(new { Datos = lista });
+                //int id = Convert.ToInt32(values["PropietarioId"]);
+                //int propietarioId = Convert.ToInt32(collection["BuscarPropietarioId"]);
+
+                #region condiciones
+                string condiciones = "";
+                int propietarioId = Convert.ToInt32(values["PropietarioId"]);
+                condiciones += propietarioId == 0 ? "" : " AND PropietarioId = " + propietarioId;
+
+                int visibilidad = Convert.ToInt32(values["Visibilidad"]);
+                condiciones += visibilidad == -1 ? "" : $" AND Visible = '{visibilidad}'";
+
+                string uso = values["Uso"];
+                condiciones += uso == "0" ? "" : $" AND Uso = '{uso}'";
+
+                string tipo = values["Tipo"];
+                condiciones += tipo == "0" ? "" : $" AND Tipo = '{tipo}'";
+
+                string precioMaximo = values["Precio"];
+                condiciones += String.IsNullOrEmpty(precioMaximo) ? "" : $" AND Precio <= {precioMaximo}";
+
+                string ambientes = values["Ambientes"].ToString();
+                condiciones += String.IsNullOrEmpty(ambientes) ? "" : $" AND Ambientes >= {ambientes}";
+
+                string superficie = values["Superficie"];
+                condiciones += String.IsNullOrEmpty(superficie) ? "" : $" AND Superficie >= {superficie}";
+
+                string fechaDesde = values["FechaDesde"];
+                DateTime desde = fechaDesde == "" ? DateTime.MinValue : DateTime.Parse(fechaDesde);
+                string fechaHasta = values["FechaHasta"];
+                DateTime hasta = fechaHasta == "" ? DateTime.MaxValue : DateTime.Parse(fechaHasta);
+                #endregion condiciones
+
+                ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
+                var lista = repositorioInmueble.ObtenerPorBusqueda(condiciones, desde, hasta);
+                //var lista = repositorioInmueble.ObtenerPorPropietario(propietarioId);
+
+                return PartialView("Fila", lista);
+                //return Json(new { Datos = lista });
                 //return View(nameof(Index), lista);
             } 
             catch (Exception ex)
@@ -63,7 +100,7 @@ namespace InmobiliariaSpartano.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Buscar(IFormCollection collection)
+        public ActionResult Buscar2(IFormCollection collection)
         {
             try
             {

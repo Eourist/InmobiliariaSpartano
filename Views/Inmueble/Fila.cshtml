@@ -1,0 +1,57 @@
+﻿@model IEnumerable<InmobiliariaSpartano.Models.Inmueble>
+
+@{
+    ViewData["Title"] = "Fila";
+}
+@foreach (var item in Model)
+{
+    <tr style="@(item.Visible == 1 ? "" : "color: darkgrey")">
+        <td>
+            #@Html.DisplayFor(modelItem => item.Id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Direccion)
+        </td>
+        <td>
+            @item.Dueño.ToString()
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Uso)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tipo)
+        </td>
+        <td>
+            $@Html.DisplayFor(modelItem => item.Precio)
+        </td>
+        <td>
+            <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
+                <i class="fas fa-file-alt"></i>
+            </a>
+            <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Edit" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Editar">
+                <i class="fas fa-edit"></i>
+            </a>
+            @if (item.Visible == 1)
+            {
+                <button onclick="$('#OcultarInmuebleId').val(@item.Id)" data-target="#modal-ocultar" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Ocultar">
+                    <i class="fas fa-eye-slash"></i>
+                </button>
+            }
+            else
+            {
+                <a onclick="$('#MostrarInmuebleId').val(@item.Id)" href="#modal-mostrar" data-toggle="modal" data-tooltip="tooltip" class="btn btn-sm btn-outline-primary" data-placement="top" title="Mostrar">
+                    <i class="fas fa-eye"></i>
+                </a>
+            }
+            <a asp-route-InmuebleId="@item.Id" asp-controller="Contrato" asp-action="Index" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Contratos">
+                <i class="fas fa-handshake"></i>
+            </a>
+            @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+            {
+                <a asp-route-id="@item.Id" asp-controller="Inmueble" asp-action="Delete" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            }
+        </td>
+    </tr>
+}

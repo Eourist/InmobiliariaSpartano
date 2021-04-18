@@ -38,18 +38,18 @@ namespace InmobiliariaSpartano.Models
             return lista;
         }
 
-        public bool Disponible(int id, DateTime desde, DateTime hasta)
+        public bool Disponible(int id, DateTime desde, DateTime hasta, int IgnorarContratoId = 0)
         {
             bool res = false;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = "SELECT c.InmuebleId ";
                 sql += "FROM Contratos c ";
-                sql += $"WHERE c.InmuebleId = {id} AND c.Estado = 1 ";
+                sql += $"WHERE c.InmuebleId = {id} AND c.Estado = 1 AND c.Id != {IgnorarContratoId}";
                 sql += $"AND ((c.FechaDesde BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM-dd-yyyy")}') ";
                 sql += $"OR (c.FechaHasta BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM-dd-yyyy")}') ";
                 sql += $"OR (c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}' AND c.FechaDesde > '{hasta.ToString("MM-dd-yyyy")}'))";
-                // Devuelve el inmueble solo si este tiene contratos vigentes dentro del rango de fechas
+                // Devuelve el inmueble tantas veces como contratos vigentes tenga dentro del rango de fechas
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
@@ -73,12 +73,18 @@ namespace InmobiliariaSpartano.Models
                 // Devuelve todos los inmuebles segun los parametros de busqueda {condiciones} y si no tiene contratos dentro del rango de fechas desde-hasta
                 string sql = "SELECT i.Id, i.PropietarioId, i.Direccion, i.Uso, i.Tipo, i.Precio, i.Ambientes, i.Superficie, i.Visible ";
                 sql += "FROM Inmuebles i ";
-                sql += "WHERE (SELECT COUNT(c.Id) ";
-                sql += "FROM Contratos c ";
-                sql += "WHERE c.InmuebleId = i.Id AND c.Estado = 1 ";
-                sql += $"AND ((c.FechaDesde BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM - dd - yyyy")}') ";
-                sql += $"OR (c.FechaHasta BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM - dd - yyyy")}') ";
-                sql += $"OR (c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}' AND c.FechaDesde > '{hasta.ToString("MM - dd - yyyy")}'))) = 0 ";
+                if (desde != DateTime.MinValue || hasta != DateTime.MaxValue)
+                {
+                    sql += "WHERE (SELECT COUNT(c.Id) ";
+                    sql += "FROM Contratos c ";
+                    sql += "WHERE c.InmuebleId = i.Id AND c.Estado = 1 ";
+                    sql += $"AND ((c.FechaDesde BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM - dd - yyyy")}') ";
+                    sql += $"OR (c.FechaHasta BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM - dd - yyyy")}') ";
+                    sql += $"OR (c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}' AND c.FechaDesde > '{hasta.ToString("MM - dd - yyyy")}'))) = 0 ";
+                } else
+                {
+                    sql += "WHERE i.Id > 0 ";
+                }
                 sql += $"{condiciones} ";
                 sql += "ORDER BY i.Id DESC";
                 using (SqlCommand command = new SqlCommand(sql, connection))

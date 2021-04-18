@@ -156,7 +156,8 @@ namespace InmobiliariaSpartano.Controllers
         {
             List<Inmueble> inmuebles = repositorioInmueble.ObtenerVisibles(); // Mostrar los disponibles + el seleccionado actualmente
             Inmueble actual = repositorioInmueble.ObtenerPorId<Inmueble>(repositorioContrato.ObtenerPorId<Contrato>(id).InmuebleId);
-            inmuebles.Insert(0, actual);
+            if (actual.Visible == 0)
+                inmuebles.Insert(0, actual);
 
             ViewData["Inmuebles"] = inmuebles;
             ViewData["Inquilinos"] = repositorioInquilino.ObtenerTodos<Inquilino>();
@@ -198,15 +199,8 @@ namespace InmobiliariaSpartano.Controllers
 
                 if (e.FechaDesde > e.FechaHasta || e.FechaDesde.Month == e.FechaHasta.Month)
                     throw new Exception("La fecha final del contrato no puede ser menor o del mismo mes que la fecha inicial");
-
-                // Cambiar el estado del contrato temporalmente para que la comprobación de disponibilidad por fechas no lo tome en cuenta
-                repositorioContrato.CambiarEstado(e.Id, 0); // MEJORAR 
-                if (!repositorioInmueble.Disponible(e.InmuebleId, e.FechaDesde, e.FechaHasta))
-                {
-                    repositorioContrato.CambiarEstado(e.Id, 1);
+                if (!repositorioInmueble.Disponible(e.InmuebleId, e.FechaDesde, e.FechaHasta, e.Id))
                     throw new Exception("El inmueble esta ocupado por otro contrato en el periodo de fechas ingresado.");
-                } else
-                    repositorioContrato.CambiarEstado(e.Id, 1);
 
                 repositorioContrato.Editar(e);
 
@@ -309,15 +303,8 @@ namespace InmobiliariaSpartano.Controllers
                     }
                 }
 
-                // Cambiar el estado del contrato temporalmente para que la comprobación de disponibilidad por fechas no lo tome en cuenta
-                repositorioContrato.CambiarEstado(anterior.Id, 0); // MEJORAR 
-                if (!repositorioInmueble.Disponible(anterior.InmuebleId, anterior.FechaHasta, fechaRenovacion))
-                {
-                    repositorioContrato.CambiarEstado(anterior.Id, 1);
+                if (!repositorioInmueble.Disponible(anterior.InmuebleId, anterior.FechaHasta, fechaRenovacion, anterior.Id))
                     throw new Exception("No se puede renovar porque el inmueble está ocupado por otro contrato en el periodo de fechas ingresado.");
-                }
-                else
-                    repositorioContrato.CambiarEstado(anterior.Id, 1);
 
                 Contrato renovacion = new Contrato()
                 {
