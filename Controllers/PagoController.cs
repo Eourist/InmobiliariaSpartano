@@ -62,7 +62,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 ViewData["Contrato"] = repositorioContrato.ObtenerPorId<Contrato>(ContratoId);
                 return View();
             }

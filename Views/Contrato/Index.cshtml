@@ -5,86 +5,79 @@
 }
 
 <h1>Contratos</h1>
-@if (!String.IsNullOrEmpty((string)ViewData["Error"]))
-{
-    <div class="alert alert-danger" role="alert">
-        @ViewData["Error"]
-    </div>
-}
 <p>
     <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-plus-square"></i> Nuevo contrato</a>
     <button class="btn btn-outline-primary" data-toggle="collapse" data-target="#filtros-contratos"><i class="fas fa-filter"></i> Filtros</button>
 </p>
 <div class="collapse" id="filtros-contratos">
-    <form asp-action="Buscar">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-row">
-            <div class="col">
-                <div class="form-group">
-                    <label for="BuscarInmuebleId">Inmueble</label>
-                    <select name="BuscarInmuebleId" id="BuscarInmuebleId" class="form-control">
-                        <option value="0">Cualquiera</option>
-                        @foreach (var inmueble in ViewData["Inmuebles"] as List<Inmueble>)
-                        {
-                            @:<option value="@inmueble.Id">@inmueble.ToString()</option>
-                        }
-                    </select>
-                    <span class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label for="BuscarInquilinoId">Inquilino</label>
-                    <select name="BuscarInquilinoId" id="BuscarInquilinoId" class="form-control">
-                        <option value="0">Cualquiera</option>
-                        @foreach (var inquilino in ViewData["Inquilinos"] as List<Inquilino>)
-                        {
-                            <option value="@inquilino.Id">
-                                @inquilino.ToString()
-                            </option>
-                        }
-                    </select>
-                    <span class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-group">
-                    <label for="BuscarEstado">Estado</label>
-                    <select name="BuscarEstado" id="BuscarEstado" class="form-control">
-                        <option value="0">Cualquiera</option>
-                        @foreach (KeyValuePair<int, string> kvp in Contrato.ObtenerEstados())
-                        {
-                            <option value="@kvp.Key">
-                                Solo contratos @(kvp.Value)s
-                            </option>
-                        }
-                    </select>
-                    <span class="text-danger"></span>
-                </div>
+    <!--<form asp-action="Buscar">-->
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-row">
+        <div class="col">
+            <div class="form-group">
+                <label for="BuscarInmuebleId">Inmueble</label>
+                <select name="BuscarInmuebleId" id="BuscarInmuebleId" class="form-control">
+                    <option value="0">Cualquiera</option>
+                    @foreach (var inmueble in ViewData["Inmuebles"] as List<Inmueble>)
+                    {
+                        @:<option value="@inmueble.Id">@inmueble.ToString()</option>
+                    }
+                </select>
+                <span class="text-danger"></span>
             </div>
         </div>
-        <div class="form-row">
-            <div class="col">
-                <div class="form-group mb-0">
-                    <label for="BuscarFechaDesde">Fecha Desde</label>
-                    <input type="date" name="BuscarFechaDesde" id="BuscarFechaDesde" class="form-control" />
-                    <span class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-group mb-0">
-                    <label for="BuscarFechaHasta">Fecha Hasta</label>
-                    <input type="date" name="BuscarFechaHasta" id="BuscarFechaHasta" class="form-control" />
-                    <span class="text-danger"></span>
-                </div>
+        <div class="col">
+            <div class="form-group">
+                <label for="BuscarInquilinoId">Inquilino</label>
+                <select name="BuscarInquilinoId" id="BuscarInquilinoId" class="form-control">
+                    <option value="0">Cualquiera</option>
+                    @foreach (var inquilino in ViewData["Inquilinos"] as List<Inquilino>)
+                    {
+                        <option value="@inquilino.Id">
+                            @inquilino.ToString()
+                        </option>
+                    }
+                </select>
+                <span class="text-danger"></span>
             </div>
         </div>
-        <small>Se mostraran todos los contratos que se encuentren vigentes dentro del rango de fechas ingresado (por defecto todos)</small>
-        <div class="form-group mt-1">
-            <!--<button onclick="buscarInmueble()">buscar</button>-->
-            <button type="submit" class="btn btn-outline-primary"><i class="fas fa-search"></i> Buscar</button>
+        <div class="col">
+            <div class="form-group">
+                <label for="BuscarEstado">Estado</label>
+                <select name="BuscarEstado" id="BuscarEstado" class="form-control">
+                    <option value="0">Cualquiera</option>
+                    @foreach (KeyValuePair<int, string> kvp in Contrato.ObtenerEstados())
+                    {
+                        <option value="@kvp.Key">
+                            Solo contratos @(kvp.Value)s
+                        </option>
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
         </div>
-    </form>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <div class="form-group mb-0">
+                <label for="BuscarFechaDesde">Fecha Desde</label>
+                <input type="date" name="BuscarFechaDesde" id="BuscarFechaDesde" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group mb-0">
+                <label for="BuscarFechaHasta">Fecha Hasta</label>
+                <input type="date" name="BuscarFechaHasta" id="BuscarFechaHasta" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <small>Se mostraran todos los contratos que se encuentren vigentes dentro del rango de fechas ingresado (por defecto todos)</small>
+    <div class="form-group mt-1">
+        <button onclick="buscarContrato()" class="btn btn-outline-primary"><i class="fas fa-search"></i> Buscar</button>
+    </div>
+    <!--</form>-->
 </div>
 <table class="table">
     <thead>
@@ -110,7 +103,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="filas-contratos">
         @foreach (var item in Model)
         {
             <tr>
@@ -153,4 +146,34 @@
         }
     </tbody>
 </table>
+
+<script>
+    function buscarContrato() {
+        var id = $('#BuscarPropietarioId').val();
+        var data = {
+            InmuebleId: $('#BuscarInmuebleId').val(),
+            InquilinoId: $('#BuscarInquilinoId').val(),
+            Estado: $('#BuscarEstado').val(),
+            FechaDesde: $('#BuscarFechaDesde').val(),
+            FechaHasta: $('#BuscarFechaHasta').val()
+        };
+        $.ajax({
+            url: `@Url.Action("Buscar", "Contrato")`,
+            method: "GET",
+            data: { data: JSON.stringify(data) }
+        }).done(function (data) {
+            var tabla = $('#filas-contratos');
+            tabla.html("");
+            tabla.append(data);
+
+            $(function () {
+                $('[data-tooltip="tooltip"]').tooltip()
+                $('[data-toggle="tooltip"]').tooltip()
+            });
+        }).fail(res => {
+            console.log("Error: ", res);
+        });
+    }
+</script>
+
 

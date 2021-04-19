@@ -11,8 +11,7 @@ namespace InmobiliariaSpartano.Models
     {
         Abierto = 1,
         Terminado = 2,
-        Renovado = 3,
-        Roto = 4
+        Roto = 3
     }
     public class Contrato : Entidad
     {

@@ -30,7 +30,6 @@ namespace InmobiliariaSpartano.Controllers
         public ActionResult Index(int PropietarioId = 0)
         {
             ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
-            ViewData["Error"] = TempData["Error"];
 
             List<Inmueble> propietarios = PropietarioId == 0 ? repositorioInmueble.ObtenerTodos<Inmueble>() : repositorioInmueble.ObtenerPorPropietario(PropietarioId);
             return View(propietarios);
@@ -42,106 +41,44 @@ namespace InmobiliariaSpartano.Controllers
             return View(repositorioInmueble.ObtenerPorId<Inmueble>(id));
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
         public ActionResult Buscar(string data)
         {
             try
             {
-                var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
+                Dictionary<string, string> filtros = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
 
-                //int id = Convert.ToInt32(values["PropietarioId"]);
-                //int propietarioId = Convert.ToInt32(collection["BuscarPropietarioId"]);
-
-                #region condiciones
                 string condiciones = "";
-                int propietarioId = Convert.ToInt32(values["PropietarioId"]);
+                int propietarioId = Convert.ToInt32(filtros["PropietarioId"]);
                 condiciones += propietarioId == 0 ? "" : " AND PropietarioId = " + propietarioId;
 
-                int visibilidad = Convert.ToInt32(values["Visibilidad"]);
+                int visibilidad = Convert.ToInt32(filtros["Visibilidad"]);
                 condiciones += visibilidad == -1 ? "" : $" AND Visible = '{visibilidad}'";
 
-                string uso = values["Uso"];
+                string uso = filtros["Uso"];
                 condiciones += uso == "0" ? "" : $" AND Uso = '{uso}'";
 
-                string tipo = values["Tipo"];
+                string tipo = filtros["Tipo"];
                 condiciones += tipo == "0" ? "" : $" AND Tipo = '{tipo}'";
 
-                string precioMaximo = values["Precio"];
+                string precioMaximo = filtros["Precio"];
                 condiciones += String.IsNullOrEmpty(precioMaximo) ? "" : $" AND Precio <= {precioMaximo}";
 
-                string ambientes = values["Ambientes"].ToString();
+                string ambientes = filtros["Ambientes"].ToString();
                 condiciones += String.IsNullOrEmpty(ambientes) ? "" : $" AND Ambientes >= {ambientes}";
 
-                string superficie = values["Superficie"];
+                string superficie = filtros["Superficie"];
                 condiciones += String.IsNullOrEmpty(superficie) ? "" : $" AND Superficie >= {superficie}";
 
-                string fechaDesde = values["FechaDesde"];
+                string fechaDesde = filtros["FechaDesde"];
                 DateTime desde = fechaDesde == "" ? DateTime.MinValue : DateTime.Parse(fechaDesde);
-                string fechaHasta = values["FechaHasta"];
+                string fechaHasta = filtros["FechaHasta"];
                 DateTime hasta = fechaHasta == "" ? DateTime.MaxValue : DateTime.Parse(fechaHasta);
-                #endregion condiciones
 
-                ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
-                var lista = repositorioInmueble.ObtenerPorBusqueda(condiciones, desde, hasta);
-                //var lista = repositorioInmueble.ObtenerPorPropietario(propietarioId);
-
+                List<Inmueble> lista = repositorioInmueble.ObtenerPorBusqueda(condiciones, desde, hasta);
                 return PartialView("Fila", lista);
-                //return Json(new { Datos = lista });
-                //return View(nameof(Index), lista);
             } 
             catch (Exception ex)
             {
-                return Json(new { Error = ex.Message });
-                //TempData["Error"] = ex.Message;
-                //return RedirectToAction(nameof(Index));
-            }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Buscar2(IFormCollection collection)
-        {
-            try
-            {
-                #region condiciones
-                string condiciones = "";
-                int propietarioId = Convert.ToInt32(collection["BuscarPropietarioId"]);
-                condiciones += propietarioId == 0 ? "" : " AND PropietarioId = " + propietarioId;
-
-                int visibilidad = Convert.ToInt32(collection["BuscarVisibilidad"]);
-                condiciones += visibilidad == -1 ? "" : $" AND Visible = '{visibilidad}'";
-
-                string uso = collection["BuscarUso"].ToString();
-                condiciones += uso == "0" ? "" : $" AND Uso = '{uso}'";
-
-                string tipo = collection["BuscarTipo"].ToString();
-                condiciones += tipo == "0" ? "" : $" AND Tipo = '{tipo}'";
-
-                string precioMaximo = collection["BuscarPrecio"].ToString();
-                condiciones += precioMaximo == "" ? "" : $" AND Precio <= {precioMaximo}";
-
-                string ambientes = collection["BuscarAmbientes"].ToString();
-                condiciones += ambientes == "" ? "" : $" AND Ambientes >= {ambientes}";
-
-                string superficie = collection["BuscarSuperficie"].ToString();
-                condiciones += superficie == "" ? "" : $" AND Superficie >= {superficie}";
-
-                string fechaDesde = collection["BuscarFechaDesde"].ToString();
-                DateTime desde = fechaDesde == "" ? DateTime.MinValue : DateTime.Parse(fechaDesde);
-                string fechaHasta = collection["BuscarFechaHasta"].ToString();
-                DateTime hasta = fechaHasta == "" ? DateTime.MaxValue : DateTime.Parse(fechaHasta);
-                #endregion condiciones
-
-                ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
-                var lista = repositorioInmueble.ObtenerPorBusqueda(condiciones, desde, hasta);
-
-                //return Json(new { Datos = lista });
-                return View(nameof(Index), lista);
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { Error = ex.Message });
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
@@ -159,7 +96,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return View("Index", repositorioInmueble.ObtenerTodos<Inmueble>());
             }
         }
@@ -176,7 +113,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return View("Index", repositorioInmueble.ObtenerTodos<Inmueble>());
             }
         }
@@ -212,7 +149,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
                 return View();
             }
@@ -246,7 +183,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 ViewData["Propietarios"] = repositorioPropietario.ObtenerTodos<Propietario>();
                 return View(repositorioInmueble.ObtenerPorId<Inmueble>(id));
             }
@@ -275,7 +212,7 @@ namespace InmobiliariaSpartano.Controllers
                 string msg = ex.Message;
                 if (ex is SqlException && (ex as SqlException).Number == 547)
                     msg = "No se puede eliminar este Inmueble porque es parte de un Contrato existente.";
-                ViewData["Error"] = msg;
+                TempData["Error"] = msg;
                 return View(repositorioInmueble.ObtenerPorId<Inmueble>(id));
             }
         }

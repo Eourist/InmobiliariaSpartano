@@ -76,7 +76,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return View();
             }
         }
@@ -128,7 +128,7 @@ namespace InmobiliariaSpartano.Controllers
                 string msg = ex.Message;
                 if (ex is SqlException && (ex as SqlException).Number == 2627)
                     msg = "Ya existe una cuenta asociada a ese Email.";
-                ViewData["Error"] = msg;
+                TempData["Error"] = msg;
                 return View();
             }
         }
@@ -166,7 +166,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return View(repositorioUsuario.ObtenerPorId<Usuario>(id));
             }
         }
@@ -191,7 +191,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return View(repositorioUsuario.ObtenerPorId<Usuario>(id));
             }
         }

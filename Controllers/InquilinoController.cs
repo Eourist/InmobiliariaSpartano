@@ -56,7 +56,7 @@ namespace InmobiliariaSpartano.Controllers
                 string msg = ex.Message;
                 if (ex is SqlException && (ex as SqlException).Number == 2627)
                     msg = "Ya existe un inquilino asociado a ese Email.";
-                ViewData["Error"] = msg;
+                TempData["Error"] = msg;
                 return View();
             }
         }
@@ -79,7 +79,7 @@ namespace InmobiliariaSpartano.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = ex.Message;
+                TempData["Error"] = ex.Message;
                 return View(repositorioInquilino.ObtenerPorId<Inquilino>(id));
             }
         }
@@ -107,7 +107,7 @@ namespace InmobiliariaSpartano.Controllers
                 string msg = ex.Message;
                 if (ex is SqlException && (ex as SqlException).Number == 547)
                     msg = "No se puede eliminar el Inquilino porque existe un Contrato a nombre suyo.";
-                ViewData["Error"] = msg;
+                TempData["Error"] = msg;
                 return View(repositorioInquilino.ObtenerPorId<Inquilino>(id));
             }
         }

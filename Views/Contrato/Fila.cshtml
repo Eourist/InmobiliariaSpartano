@@ -1,0 +1,45 @@
+﻿@model IEnumerable<InmobiliariaSpartano.Models.Contrato>
+
+@{
+    ViewData["Title"] = "Fila";
+}
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            #@Html.DisplayFor(modelItem => item.Id)
+        </td>
+        <td>
+            @item.Inmueble.ToString()
+        </td>
+        <td>
+            @item.Inquilino.ToString()
+        </td>
+        <td>
+            @item.FechaDesde.ToShortDateString() - @item.FechaHasta.ToShortDateString()
+        </td>
+        <td>
+            @item.NombreEstado
+        </td>
+        <td>
+            @item.EstadoPagos
+        </td>
+        <td>
+            <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Details" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles">
+                <i class="fas fa-file-alt"></i>
+            </a>
+            <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Edit" class="btn btn-sm btn-outline-primary @Html.Encode(item.Estado > 1 ? "disabled" : "")" data-toggle="tooltip" data-placement="top" title="Editar">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a asp-route-ContratoId="@item.Id" asp-controller="Pago" asp-action="Index" class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Pagos">
+                <i class="fas fa-money-bill-wave-alt"></i>
+            </a>
+            @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+            {
+                <a asp-route-id="@item.Id" asp-controller="Contrato" asp-action="Delete" class="btn btn-sm btn-outline-primary @Html.Encode(item.Estado > 1 ? "disabled" : "")" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            }
+        </td>
+    </tr>
+}

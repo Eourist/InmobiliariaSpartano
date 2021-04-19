@@ -45,10 +45,11 @@ namespace InmobiliariaSpartano.Models
             {
                 string sql = "SELECT c.InmuebleId ";
                 sql += "FROM Contratos c ";
-                sql += $"WHERE c.InmuebleId = {id} AND c.Estado = 1 AND c.Id != {IgnorarContratoId}";
+                //sql += $"WHERE c.InmuebleId = {id} AND c.Estado = 1 AND c.Id != {IgnorarContratoId}";
+                sql += $"WHERE c.InmuebleId = {id}  AND c.Id != {IgnorarContratoId}";
                 sql += $"AND ((c.FechaDesde BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM-dd-yyyy")}') ";
                 sql += $"OR (c.FechaHasta BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM-dd-yyyy")}') ";
-                sql += $"OR (c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}' AND c.FechaDesde > '{hasta.ToString("MM-dd-yyyy")}'))";
+                sql += $"OR (c.FechaDesde < '{desde.ToString("MM-dd-yyyy")}' AND c.FechaHasta > '{hasta.ToString("MM-dd-yyyy")}'))";
                 // Devuelve el inmueble tantas veces como contratos vigentes tenga dentro del rango de fechas
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -77,10 +78,11 @@ namespace InmobiliariaSpartano.Models
                 {
                     sql += "WHERE (SELECT COUNT(c.Id) ";
                     sql += "FROM Contratos c ";
-                    sql += "WHERE c.InmuebleId = i.Id AND c.Estado = 1 ";
-                    sql += $"AND ((c.FechaDesde BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM - dd - yyyy")}') ";
-                    sql += $"OR (c.FechaHasta BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM - dd - yyyy")}') ";
-                    sql += $"OR (c.FechaHasta < '{desde.ToString("MM-dd-yyyy")}' AND c.FechaDesde > '{hasta.ToString("MM - dd - yyyy")}'))) = 0 ";
+                    //sql += "WHERE c.InmuebleId = i.Id AND c.Estado = 1 ";
+                    sql += "WHERE c.InmuebleId = i.Id ";
+                    sql += $"AND ((c.FechaDesde BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM-dd-yyyy")}') ";
+                    sql += $"OR (c.FechaHasta BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM-dd-yyyy")}') ";
+                    sql += $"OR (c.FechaDesde < '{desde.ToString("MM-dd-yyyy")}' AND c.FechaHasta > '{hasta.ToString("MM-dd-yyyy")}'))) = 0 ";
                 } else
                 {
                     sql += "WHERE i.Id > 0 ";

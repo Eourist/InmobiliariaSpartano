@@ -5,12 +5,6 @@
 }
 
 <h1>Inmuebles</h1>
-@if (!String.IsNullOrEmpty((string)ViewData["Error"]))
-{
-    <div class="alert alert-danger" role="alert">
-        @ViewData["Error"]
-    </div>
-}
 <p>
     <a asp-action="Create" class="btn btn-outline-primary"><i class="fas fa-plus-square"></i> Nuevo inmueble</a>
     <button class="btn btn-outline-primary" data-toggle="collapse" data-target="#filtros-inmuebles"><i class="fas fa-filter"></i> Filtros</button>
@@ -118,8 +112,7 @@
         </div>
     </div>
     <div class="form-group">
-        <button onclick="buscarInmueble()">buscar (ajax)</button>
-        <button type="submit" class="btn btn-outline-primary"><i class="fas fa-search"></i> Buscar</button>
+        <button onclick="buscarInmueble()" class="btn btn-outline-primary"><i class="fas fa-search"></i> Buscar</button>
     </div>
     <!--</form>-->
 </div>
@@ -147,7 +140,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody id="filas-tabla">
+    <tbody id="filas-inmuebles">
         @foreach (var item in Model)
         {
             <tr style="@(item.Visible == 1 ? "" : "color: darkgrey")">
@@ -246,19 +239,7 @@
 </div>
 
 <script>
-    function buscarInmueble2() {
-        $.ajax({
-            url: `@Url.Action("Buscar2", "Inmueble")`,
-            method: "POST"
-        }).done(res => {
-            console.log("Búsqueda: ", res);
-        }).fail(res => {
-            console.log("Error: ", res);
-        });
-    }
-
     function buscarInmueble() {
-        var id = $('#BuscarPropietarioId').val();
         var data = {
             PropietarioId: $('#BuscarPropietarioId').val(),
             Visibilidad: $('#BuscarVisibilidad').val(),
@@ -271,55 +252,18 @@
             FechaHasta: $('#BuscarFechaHasta').val()
         };
         $.ajax({
-            url: `@Url.Action("Buscar", "Inmueble")/${id}`,
+            url: `@Url.Action("Buscar", "Inmueble")`,
             method: "GET",
             data: { data: JSON.stringify(data) }
         }).done(function (data) {
-
-            //data = jQuery.parseJSON(data);
-            console.log("Búsqueda: ", data);
-            var tabla = $('#filas-tabla');
+            var tabla = $('#filas-inmuebles');
             tabla.html("");
             tabla.append(data);
 
             $(function () {
                 $('[data-tooltip="tooltip"]').tooltip()
                 $('[data-toggle="tooltip"]').tooltip()
-            })
-            /*data.datos.forEach(function (item) {
-                tabla.append(`
-                    <tr style="${item.visible == 1 ? "" : "color: darkgrey"}">
-                        <td>
-                            #${item.id}
-                        </td>
-                        <td>
-                            ${item.direccion}
-                        </td>
-                        <td>
-                            #${item.dueño.id} ${item.dueño.nombre.charAt(0).toUpperCase()}. ${item.dueño.apellido}
-                        </td>
-                        <td>
-                            ${item.uso}
-                        </td>
-                        <td>
-                            ${item.tipo}
-                        </td>
-                        <td>
-                            $${item.precio}
-                        </td>
-                        <td>
-                            <a class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Detalles" href="/Inmueble/Details/${item.id}" data-original-title="Detalles">
-                                <i class="fas fa-file-alt"></i>
-                            </a>
-                            <a class="btn btn-sm btn-outline-primary" data-toggle="tooltip" data-placement="top" title="Editar" href="/Inmueble/Edit/${item.id}" data-original-title="Editar">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                    </tr>
-                `);
-                console.log(item)
-            })*/
-
+            });
         }).fail(res => {
             console.log("Error: ", res);
         });

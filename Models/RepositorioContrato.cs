@@ -295,7 +295,7 @@ namespace InmobiliariaSpartano.Models
                 sql += $"JOIN Propietarios ON Propietarios.Id = Inmuebles.PropietarioId ";
                 sql += $"WHERE ((FechaDesde BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM - dd - yyyy")}') ";
                 sql += $"OR (FechaHasta BETWEEN '{desde.ToString("MM-dd-yyyy")}' AND '{hasta.ToString("MM - dd - yyyy")}') ";
-                sql += $"OR (FechaHasta < '{desde.ToString("MM-dd-yyyy")}' AND FechaDesde > '{hasta.ToString("MM - dd - yyyy")}')) ";
+                sql += $"OR (FechaDesde < '{desde.ToString("MM-dd-yyyy")}' AND FechaHasta > '{hasta.ToString("MM - dd - yyyy")}')) ";
                 sql += $"{condiciones}";
                 sql += $" ORDER BY conId DESC;";
                 using (SqlCommand command = new SqlCommand(sql, connection))

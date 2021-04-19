@@ -5,12 +5,6 @@
 }
 
 <h1>Editar</h1>
-@if (!String.IsNullOrEmpty((string)ViewData["Error"]))
-{
-    <div class="alert alert-danger" role="alert">
-        @ViewData["Error"]
-    </div>
-}
 <h4>Inquilino</h4>
 <hr />
 <form asp-action="Edit">

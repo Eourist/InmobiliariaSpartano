@@ -16,13 +16,6 @@ else
 {
     <h5>Estado del contrato: @Model.NombreEstado</h5>
 }
-
-@if (!String.IsNullOrEmpty((string)ViewData["Error"]))
-{
-    <div class="alert alert-danger" role="alert">
-        @ViewData["Error"]
-    </div>
-}
 <div>
     <h4>Contrato</h4>
     <hr />
@@ -112,8 +105,8 @@ else
                     </div>
                     <p>Solo realize esta accion si:</p>
                     <ul>
-                        <li>Todos los pagos fueron realizados.</li>
-                        <li>Todavía no se alcanzo la fecha de finalización del contrato.</li>
+                        <li>Los pagos estan al día.</li>
+                        <li>Todavía no se alcanzó la fecha de finalización del contrato.</li>
                         <li>Ambos participantes estan de acuerdo con renovar el contrato.</li>
                     </ul>
                     <p>

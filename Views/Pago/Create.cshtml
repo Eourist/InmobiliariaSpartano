@@ -2,13 +2,11 @@
 
 @{
     ViewData["Title"] = "Crear";
-    string error = ViewData["Error"]?.ToString();
     Contrato contrato = ViewData["Contrato"] as Contrato;
     TempData["TestContratoId"] = contrato.Id;
 }
 
 <h1>Crear</h1>
-<p>@error</p>
 <h4>Pago</h4>
 <hr />
 <div class="row">

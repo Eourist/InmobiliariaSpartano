@@ -63,7 +63,7 @@ namespace InmobiliariaSpartano.Models
                         item.ContratoId = reader.GetInt32(1);
                         item.Fecha = reader.GetDateTime(2);
                         item.Importe = reader.GetInt32(3);
-                        item.Contrato = repContrato.ObtenerPorId<Contrato>(item.ContratoId);
+                        item.Contrato = repContrato.ObtenerPorId_v2(item.ContratoId);
 
                         res.Add(item);
                     }
