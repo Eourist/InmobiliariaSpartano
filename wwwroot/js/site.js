@@ -11,32 +11,31 @@ $(function () {
 $(document).ready(function () {
     // Control de fecha de Contrato/Create y Contrato/Edit
     $('#FechaDesde').change(function () {
-        // Eprolijar
-        var date = new Date($('#FechaDesde').val());
-        date.setDate(date.getDate() + 1);
-        var m = date.getMonth() + 1;
-        var month = ("0" + (date.getMonth() + 2)).slice(-2); // 4 -> 05
-        var year = date.getFullYear();
+        var fechaDesde = new Date($('#FechaDesde').val());
+        fechaDesde.setDate(fechaDesde.getDate() + 1);
+        var mesDesde = fechaDesde.getMonth() + 1;
+        var anioDesde = fechaDesde.getFullYear();
 
-        var dateHasta = new Date($('#FechaHasta').val());
-        dateHasta.setDate(dateHasta.getDate() + 1);
-        var mh = dateHasta.getMonth() + 1;
-        var yearHasta = dateHasta.getFullYear();
+        var fechaHasta = new Date($('#FechaHasta').val());
+        fechaHasta.setDate(fechaHasta.getDate() + 1);
+        var mesHasta = fechaHasta.getMonth() + 1;
+        var anioHasta = fechaHasta.getFullYear();
 
-        if (month == 13) {
-            month = "01";
-            year = year + 1;
+        var mesMinimoHasta = ("0" + (fechaDesde.getMonth() + 2)).slice(-2);
+        var anioMinimoHasta = anioDesde;
+
+        if (mesMinimoHasta == 13) {
+            mesMinimoHasta = "01";
+            anioMinimoHasta++;
         }
 
         $('#FechaHasta').attr({
-            "min": [year, month].join('-')
+            "min": [anioMinimoHasta, mesMinimoHasta].join('-')
         });
 
-        if (year > yearHasta || (year == yearHasta && m >= mh)) {
-            if (month == 13) {
-                month = "01"; year = year + 1;
-            }
-            $('#FechaHasta').val([year, month].join('-'));
+        if (anioDesde > anioHasta || (anioDesde == anioHasta && mesDesde >= mesHasta)) {
+            $('#FechaHasta').val("");
+            //$('#FechaHasta').val([anioMinimoHasta, mesMinimoHasta].join('-'));
         }
     });
 });

@@ -168,7 +168,7 @@ namespace InmobiliariaSpartano.Models
                     else
                         sql += $"{columnas[i]}, ";
                 }
-                sql += $" FROM {tabla} WHERE PropietarioId = {PropietarioId};";
+                sql += $" FROM {tabla} WHERE PropietarioId = {PropietarioId} ORDER BY Id DESC;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     connection.Open();
