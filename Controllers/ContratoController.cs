@@ -105,20 +105,24 @@ namespace InmobiliariaSpartano.Controllers
                     FechaDesde = DateTime.Parse(collection["FechaDesde"]),
                     Estado = 1
                 };
-                // Por FechaHasta solo viene año y mes. Settear el mismo dia que FechaDesde:
-                e.FechaHasta = DateTime.Parse(collection["FechaHasta"]).AddDays(e.FechaDesde.Day - 1);
+                e.Precio = repositorioInmueble.ObtenerPorId<Inmueble>(e.InmuebleId).Precio;
 
-                // Corregir fechas si el contrato empieza en los ultimos días del mes y termina en uno de los meses de pocos días
-                if (e.FechaDesde.Day > 28)
+                // Por FechaHasta solo viene año y mes. Settear el mismo dia que FechaDesde
+                e.FechaHasta = DateTime.Parse(collection["FechaHasta"]);
+                int mesInput = e.FechaHasta.Month; // Guardar el mes ingresado para ver si el AddDays lo cambia
+                e.FechaHasta = e.FechaHasta.AddDays(e.FechaDesde.Day - 1);
+
+                // Comprobar si el AddDays cambio el mes (si el dia inicio no existe en el mes final)
+                if (mesInput != e.FechaHasta.Month)
                 {
                     switch (e.FechaHasta.Month)
                     {
-                        case 3: // Meses siguientes a los meses deformes- porque el AddDays de arriba^^ los ignora y rompe el calculo de Contrato.TotalMeses
-                            e.FechaHasta = new DateTime(e.FechaHasta.Year, 2, DateTime.IsLeapYear(e.FechaHasta.Year) ? 29 : 28);
+                        case 3: // Meses siguientes a los meses cortos- porque el AddDays pasa al siguiente mes si lo necesita
+                            e.FechaHasta = new DateTime(e.FechaHasta.Year, mesInput, DateTime.IsLeapYear(e.FechaHasta.Year) ? 29 : 28);
                             break;
                         case 5: case 7: case 10: case 12:
                             if (e.FechaDesde.Day > 30)
-                                e.FechaHasta = new DateTime(e.FechaHasta.Year, e.FechaHasta.Month - 1, 30);
+                                e.FechaHasta = new DateTime(e.FechaHasta.Year, mesInput, 30);
                             break;
                     }
                 }
@@ -168,20 +172,22 @@ namespace InmobiliariaSpartano.Controllers
                     FechaDesde = DateTime.Parse(collection["FechaDesde"]),
                     Estado = 1
                 };
-                // Por FechaHasta solo viene año y mes. Settear el mismo dia que FechaDesde:
-                e.FechaHasta = DateTime.Parse(collection["FechaHasta"]).AddDays(e.FechaDesde.Day - 1);
+                // Por FechaHasta solo viene año y mes. Settear el mismo dia que FechaDesde
+                e.FechaHasta = DateTime.Parse(collection["FechaHasta"]);
+                int mesInput = e.FechaHasta.Month; // Guardar el mes ingresado para ver si el AddDays lo cambia
+                e.FechaHasta = e.FechaHasta.AddDays(e.FechaDesde.Day - 1);
 
-                // Corregir fechas si el contrato empieza en los ultimos días del mes y termina en uno de los meses de pocos días
-                if (e.FechaDesde.Day > 28)
+                // Comprobar si el AddDays cambio el mes (si el dia inicio no existe en el mes final)
+                if (mesInput != e.FechaHasta.Month)
                 {
                     switch (e.FechaHasta.Month)
                     {
-                        case 3: // Meses siguientes a los meses deformes- porque el AddDays de arriba^^ los ignora y rompe el calculo de Contrato.TotalMeses
-                            e.FechaHasta = new DateTime(e.FechaHasta.Year, 2, DateTime.IsLeapYear(e.FechaHasta.Year) ? 29 : 28);
+                        case 3: // Meses siguientes a los meses cortos- porque el AddDays pasa al siguiente mes si lo necesita
+                            e.FechaHasta = new DateTime(e.FechaHasta.Year, mesInput, DateTime.IsLeapYear(e.FechaHasta.Year) ? 29 : 28);
                             break;
                         case 5: case 7: case 10: case 12:
                             if (e.FechaDesde.Day > 30)
-                                e.FechaHasta = new DateTime(e.FechaHasta.Year, e.FechaHasta.Month - 1, 30);
+                                e.FechaHasta = new DateTime(e.FechaHasta.Year, mesInput, 30);
                             break;
                     }
                 }
@@ -279,7 +285,7 @@ namespace InmobiliariaSpartano.Controllers
                 //if (DateTime.Now < anterior.FechaHasta.AddMonths(-1))
                     //throw new Exception("No se puede renovar el contrato porque todavía no se alcanzo el último mes del mismo.");
 
-                DateTime fechaRenovacion = DateTime.Parse(collection["RenovarContratoFecha"].ToString()).AddDays(anterior.FechaHasta.Day - 1);
+                /*DateTime fechaRenovacion = DateTime.Parse(collection["RenovarContratoFecha"].ToString()).AddDays(anterior.FechaHasta.Day - 1);
 
                 // Corregir fechas si el contrato empieza en los ultimos días del mes y termina en uno de los meses de pocos días
                 if (anterior.FechaHasta.Day > 28)
@@ -292,6 +298,26 @@ namespace InmobiliariaSpartano.Controllers
                         case 5: case 7: case 10: case 12:
                             if (anterior.FechaHasta.Day > 30)
                                 fechaRenovacion = new DateTime(fechaRenovacion.Year, fechaRenovacion.Month - 1, 30);
+                            break;
+                    }
+                }*/
+
+                // Por FechaHasta solo viene año y mes. Settear el mismo dia que FechaDesde
+                DateTime fechaRenovacion = DateTime.Parse(collection["RenovarContratoFecha"]);
+                int mesInput = fechaRenovacion.Month; // Guardar el mes ingresado para ver si el AddDays lo cambia
+                fechaRenovacion = fechaRenovacion.AddDays(anterior.FechaDesde.Day - 1);
+
+                // Comprobar si el AddDays cambio el mes (si el dia inicio no existe en el mes final)
+                if (mesInput != fechaRenovacion.Month)
+                {
+                    switch (fechaRenovacion.Month)
+                    {
+                        case 3: // Meses siguientes a los meses cortos- porque el AddDays pasa al siguiente mes si lo necesita
+                            fechaRenovacion = new DateTime(fechaRenovacion.Year, mesInput, DateTime.IsLeapYear(fechaRenovacion.Year) ? 29 : 28);
+                            break;
+                        case 5: case 7: case 10: case 12:
+                            if (fechaRenovacion.Day > 30)
+                                fechaRenovacion = new DateTime(fechaRenovacion.Year, mesInput, 30);
                             break;
                     }
                 }
@@ -332,7 +358,7 @@ namespace InmobiliariaSpartano.Controllers
                 if (e.ProximoPago <= DateTime.Now)
                     throw new Exception("No se puede romper el contrato porque los pagos no estan al día.");
 
-                e.FechaHasta = e.FechaDesde > DateTime.Now ? e.FechaDesde : DateTime.Now;
+                e.FechaHasta = e.FechaDesde > DateTime.Now ? e.FechaDesde : (DateTime.Now);
                 e.Estado = 3;
                 repositorioContrato.Editar(e);
                 //repositorioContrato.CambiarEstado(e.Id, 4);

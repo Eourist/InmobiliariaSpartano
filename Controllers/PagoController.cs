@@ -55,7 +55,7 @@ namespace InmobiliariaSpartano.Controllers
                 Pago e = new Pago();
                 e.ContratoId = ContratoId;
                 e.Fecha = DateTime.Now;
-                e.Importe = repositorioContrato.ObtenerPorId_v2(e.ContratoId).Inmueble.Precio;
+                e.Importe = repositorioContrato.ObtenerPorId_v2(e.ContratoId).Precio;
 
                 repositorioPago.Alta(e);
                 return RedirectToAction(nameof(Index), new { ContratoId = e.ContratoId });

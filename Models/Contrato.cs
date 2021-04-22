@@ -33,6 +33,8 @@ namespace InmobiliariaSpartano.Models
             Display(Name = "Fecha final")]
         public DateTime FechaHasta { get; set; }
 
+        public int Precio { get; set; }
+
         [Display(Name = "Inquilino")]
         public Inquilino Inquilino { get; set; }
 
@@ -48,7 +50,28 @@ namespace InmobiliariaSpartano.Models
         public string ProximoPagoTexto => ProximoPago == FechaHasta ? "N/A" : ProximoPago.ToShortDateString();
         public string EstadoPagos => Estado == 1 && ProximoPago < FechaHasta ? (ProximoPago > DateTime.Now ? "Al día" : (ProximoPago.Month == DateTime.Now.Month ? "Pendiente" : "Atrasado")) : "Finalizados";
         public string ResumenPagos => $"{CantidadPagos}/{TotalMeses} mes{(TotalMeses > 1 ? "es" : "")} pagado{(TotalMeses > 1 ? "s" : "")}";
-        public bool MitadContratoCumplida => CantidadPagos > (TotalMeses / 2);
+        public bool MitadContratoCumplida => CantidadPagos >= (TotalMeses / 2);
+
+        public string EstadoPagos2 // Testear
+        { get 
+            {
+                if (Estado == 1 && ProximoPago < FechaHasta) // Si todavia no se hizo el ultimo pago del contrato
+                {
+                    if (ProximoPago > DateTime.Now) // Si ya se pago el mes actual
+                        return "Al día";
+                    else
+                    {
+                        if (ProximoPago.Month == DateTime.Now.Month) // Si se debe solo el mes actual
+                            return "Pendiente";
+                        else 
+                            return "Atrasado";
+                    }
+                } else
+                {
+                    return "Finalizados";
+                }
+            } 
+        }
         public static IDictionary<int, string> ObtenerEstados()
         {
             SortedDictionary<int, string> estados = new SortedDictionary<int, string>();

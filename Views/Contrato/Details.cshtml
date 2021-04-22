@@ -54,7 +54,7 @@ else
             Precio mensual
         </dt>
         <dd class="col-sm-10">
-            $@Model.Inmueble.Precio
+            $@Model.Precio
         </dd>
     </dl>
     <h4>Pagos del contrato</h4>
@@ -145,7 +145,7 @@ else
                         <li>Solo el inquilino puede decidir romper el contrato.</li>
                     </ul>
                     <h6>Estado del contrato actual: @Model.ResumenPagos</h6>
-                    <h6>Valor de la multa: $@Html.Encode(Model.MitadContratoCumplida ? Model.Inmueble.Precio : (Model.Inmueble.Precio * 2))</h6>
+                    <h6>Valor de la multa: $@Html.Encode(Model.MitadContratoCumplida ? Model.Precio : (Model.Precio * 2))</h6>
 
                     <input type="hidden" name="RomperContratoId" id="RomperContratoId" value="@Model.Id" />
                     <hr />
